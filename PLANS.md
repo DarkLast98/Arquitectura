@@ -1,0 +1,35 @@
+# Plan de evolución de AIP
+
+**Estado:** propuesto. Solo la elaboración documental está autorizada. No se asignan fechas ni capacidad de equipo no acordadas.
+
+| Etapa | Resultado | Condición de salida |
+| --- | --- | --- |
+| D0 · Fundación documental | Producto, arquitectura, ADR, backlog y especificación del catálogo. | Coherencia revisada; pendientes y propuestas visibles. No habilita código. |
+| I1 · Catálogo arquitectónico | Recorrido manual Angular → API .NET modular → PostgreSQL, con entidades y relaciones aisladas por organización. | Casos de aceptación, aislamiento, autorización, concurrencia y auditoría del slice superados. |
+| I2 · Conocimiento extensible | Activación de paquetes versionados y evolución compatible de tipos. | Dependencias, compatibilidad y aislamiento de extensiones comprobados. |
+| I3 · Evidencia, vistas y gobierno | Artefactos, revisiones, decisiones y fuentes con historia; recorrido de estrategia a solución. | Revisiones vinculadas a versiones exactas, evidencia recuperable y vistas trazables. |
+| I4 · Asistencia agéntica | Un caso asistido acotado, con propuestas estructuradas y límites. | Evaluaciones de calidad, seguridad y aprobación antes de persistir. |
+| I5 · Especialización financiera y regulatoria | Paquete financiero piloto y un ámbito jurisdiccional acotado. | Fuentes verificadas, análisis de aplicabilidad, vigencia y revisión profesional. |
+
+I2–I5 expresan orden orientativo, no entregas aprobadas. El trabajo regulatorio requiere I2, I3 y el control agéntico de I4; la investigación de fuentes y mercado puede hacerse antes sin implementar.
+
+## Alcance recomendado para I1
+
+Tres tipos de entidad (`core.business_capability`, `core.application`, `core.data_asset`), dos relaciones (`core.supports`, `core.uses`), consulta y mantenimiento manual, archivo lógico, control de concurrencia, auditoría de cambios y aislamiento de dos organizaciones de demostración. Identidad y autorización se incluyen como prerrequisito transversal, no como un módulo comercial completo.
+
+Fuera: agentes, Neo4j, paquetes instalables, ingestión normativa, dictámenes regulatorios, microservicios, infraestructura desplegada y conectores externos. Detalle en [slice](docs/delivery/primer-incremento.md) y [especificación](docs/specs/catalogo-arquitectonico.md).
+
+## Antes de iniciar I1
+
+| Pendiente | Resolución necesaria | Referencia |
+| --- | --- | --- |
+| P-01 | Aprobación explícita de I1 y del diseño aplicable; registrar alcance y ADR aceptados. | [Estado](docs/00-estado.md) |
+| P-02 | Identidad de desarrollo y validación de membresías por organización: elegir proveedor o mecanismo local autenticado, sin una cabecera confiada de identidad. | ADR-0010 y especificación |
+| P-03 | Elegir versiones soportadas y compatibles de Angular, Node, .NET y PostgreSQL; validar soporte oficial al comenzar. | ADR-0003, ADR-0004, ADR-0006 |
+| P-04 | Acordar los cinco tipos de I1, operaciones, roles y aceptación. Puede quedar cubierto por la aprobación expresa de la especificación. | Backlog y especificación |
+
+No bloquean I1: país inicial, Neo4j, proveedor de modelos, runtime de agentes, licenciamiento y arquitectura de despliegue productivo. Sí bloquean sus respectivas entregas futuras.
+
+## Forma de avanzar
+
+Cada incremento tendrá requisito, alcance, dependencias, contratos, aceptación y evidencia. Preparar primero la propuesta; implementar solo lo aprobado. Los cambios que alteren límites, acceso a datos o decisiones relevantes requieren revisar su impacto. Mantener en [el backlog](docs/delivery/backlog.md) la prioridad y en [el estado](docs/00-estado.md) la evidencia de aprobación.
