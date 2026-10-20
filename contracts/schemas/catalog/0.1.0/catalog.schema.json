@@ -1,0 +1,620 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aip.invalid/contracts/catalog/0.1.0",
+  "$defs": {
+    "Entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "organization_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "type_id": {
+          "enum": [
+            "core.business_capability",
+            "core.application",
+            "core.data_asset"
+          ]
+        },
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "code": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[A-Z0-9][A-Z0-9._-]{0,63}$"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "classification": {
+          "enum": [
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "status": {
+          "enum": [
+            "active",
+            "archived"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "id",
+        "organization_id",
+        "type_id",
+        "schema_version",
+        "code",
+        "name",
+        "description",
+        "classification",
+        "status",
+        "revision",
+        "created_at",
+        "updated_at",
+        "created_by",
+        "updated_by"
+      ]
+    },
+    "Relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "organization_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "type_id": {
+          "enum": [
+            "core.supports",
+            "core.uses"
+          ]
+        },
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "active",
+            "archived"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "created_by": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "updated_by": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "source_entity_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "target_entity_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "id",
+        "organization_id",
+        "type_id",
+        "schema_version",
+        "description",
+        "status",
+        "revision",
+        "created_at",
+        "updated_at",
+        "created_by",
+        "updated_by",
+        "source_entity_id",
+        "target_entity_id"
+      ]
+    },
+    "CreateEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type_id": {
+          "enum": [
+            "core.business_capability",
+            "core.application",
+            "core.data_asset"
+          ]
+        },
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "code": {
+          "type": "string",
+          "pattern": "^\\s*[A-Za-z0-9][A-Za-z0-9._-]{0,63}\\s*$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^\\s*\\S(?:[\\s\\S]{0,198}\\S)?\\s*$"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "classification": {
+          "enum": [
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      },
+      "required": [
+        "type_id",
+        "schema_version",
+        "code",
+        "name"
+      ]
+    },
+    "PatchEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^\\s*\\S(?:[\\s\\S]{0,198}\\S)?\\s*$"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "classification": {
+          "enum": [
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "CreateRelationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type_id": {
+          "enum": [
+            "core.supports",
+            "core.uses"
+          ]
+        },
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "source_entity_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "target_entity_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type_id",
+        "schema_version",
+        "source_entity_id",
+        "target_entity_id"
+      ]
+    },
+    "AuditEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "organization_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "actor_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation": {
+          "enum": [
+            "created",
+            "updated",
+            "archived"
+          ]
+        },
+        "resource_kind": {
+          "enum": [
+            "entity",
+            "relationship"
+          ]
+        },
+        "resource_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "previous_revision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "new_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "correlation_id": {
+          "type": "string"
+        },
+        "changed_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "organization_id",
+        "actor_id",
+        "operation",
+        "resource_kind",
+        "resource_id",
+        "previous_revision",
+        "new_revision",
+        "occurred_at",
+        "correlation_id",
+        "changed_fields"
+      ]
+    },
+    "EntityPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Entity"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "limit",
+        "offset"
+      ]
+    },
+    "RelationshipPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Relationship"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "limit",
+        "offset"
+      ]
+    },
+    "AuditEventPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AuditEvent"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "limit",
+        "offset"
+      ]
+    },
+    "Types": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type_id": {
+            "enum": [
+              "core.business_capability",
+              "core.application",
+              "core.data_asset",
+              "core.supports",
+              "core.uses"
+            ]
+          },
+          "category": {
+            "enum": [
+              "entity",
+              "relationship"
+            ]
+          },
+          "schema_version": {
+            "const": "0.1.0"
+          },
+          "source_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "core.business_capability",
+                  "core.application",
+                  "core.data_asset"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "core.business_capability",
+                  "core.application",
+                  "core.data_asset"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "type_id",
+          "category",
+          "schema_version",
+          "source_type",
+          "target_type"
+        ]
+      }
+    },
+    "Problem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "minimum": 400,
+          "maximum": 599
+        },
+        "code": {
+          "type": "string"
+        },
+        "correlation_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "title",
+        "status",
+        "code",
+        "correlation_id"
+      ]
+    },
+    "Session": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "csrf_token": {
+          "type": "string"
+        },
+        "username": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "organizations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "role": {
+                "enum": [
+                  "organization_admin",
+                  "architect",
+                  "reader"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "role"
+            ]
+          }
+        }
+      },
+      "required": [
+        "csrf_token",
+        "username",
+        "organizations"
+      ]
+    }
+  }
+}
