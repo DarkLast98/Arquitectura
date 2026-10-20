@@ -1,0 +1,419 @@
+<header>
+  <a class="brand" href="/"
+    >AIP<span>Architecture Intelligence Platform</span></a
+  ><span class="badge">Catálogo · I1</span>
+  @if (session()?.username) {
+  <div class="account">
+    <span>{{ session()?.username }}</span
+    ><button (click)="logout()" [disabled]="busy()">Cerrar sesión</button>
+  </div>
+  }
+</header>
+<main>
+  @if (error()) {
+  <div role="alert" class="message error">{{ error() }}</div>
+  } @if (notice()) {
+  <div role="status" class="message success">{{ notice() }}</div>
+  } @if (!session()?.username) {
+  <section class="login panel">
+    <span class="eyebrow">ARQUITECTURA CON TRAZABILIDAD</span>
+    <h1>Conecta las piezas de tu arquitectura</h1>
+    <p>
+      Accede al catálogo de tu organización para gestionar capacidades,
+      aplicaciones y activos de datos.
+    </p>
+    <button (click)="login()" [disabled]="busy()">
+      Iniciar sesión con el proveedor de identidad
+    </button>
+    <p class="muted">
+      Entorno local de demostración. Usa únicamente información sintética.
+    </p>
+  </section>
+  } @else {
+  <section class="workspace">
+    <div>
+      <span class="eyebrow">ESPACIO DE TRABAJO</span>
+      <h1>Catálogo arquitectónico</h1>
+      <p>Modela elementos y explora sus conexiones.</p>
+    </div>
+    <label
+      >Organización<select
+        aria-label="Organización"
+        [ngModel]="orgId()"
+        (ngModelChange)="changeOrg($event)"
+        [disabled]="busy()"
+      >
+        @for (o of session()!.organizations; track o.id) {
+        <option [value]="o.id">{{ o.name }}</option>
+        }</select
+      ><small>Rol: {{ org()?.role }}</small></label
+    >
+  </section>
+  <nav aria-label="Secciones">
+    <button
+      [class.current]="tab() === 'entities'"
+      (click)="showTab('entities')"
+    >
+      Entidades</button
+    ><button
+      [class.current]="tab() === 'relationships'"
+      (click)="showTab('relationships')"
+    >
+      Relaciones
+    </button>
+    @if (isAdmin()) {
+    <button [class.current]="tab() === 'audit'" (click)="showTab('audit')">
+      Auditoría
+    </button>
+    }
+  </nav>
+  @if (tab() === "entities") {
+  <div class="columns">
+    <section class="panel">
+      <div class="section-title">
+        <h2>Entidades <small>{{ total() }}</small></h2>
+        @if (canWrite()) {
+        <button (click)="newEntity()" [disabled]="busy()">Nueva entidad</button>
+        }
+      </div>
+      <form class="filters" (ngSubmit)="search()">
+        <label
+          >Buscar por nombre<input
+            name="q"
+            [(ngModel)]="query"
+            maxlength="128" /></label
+        ><label
+          >Tipo<select
+            aria-label="Tipo"
+            name="filterType"
+            [(ngModel)]="filterType"
+          >
+            <option value="">Todos</option>
+            @for (t of entityTypes; track t.id) {
+            <option [value]="t.id">{{ t.label }}</option>
+            }
+          </select></label
+        ><label
+          >Estado<select aria-label="Estado" name="status" [(ngModel)]="status">
+            <option value="active">Activas</option>
+            <option value="archived">Archivadas</option>
+            <option value="all">Todas</option>
+          </select></label
+        ><button [disabled]="busy()">Buscar</button>
+      </form>
+      <div class="entity-list">
+        @for (e of entities(); track e.id) {
+        <button
+          class="entity-item"
+          [class.selected]="selected()?.id === e.id"
+          (click)="choose(e)"
+          [disabled]="busy()"
+        >
+          <span class="eyebrow">{{ label(e.type_id) }} · {{ e.code }}</span
+          ><strong>{{ e.name }}</strong
+          ><small>{{ e.status }} · revisión {{ e.revision }}</small>
+        </button>
+        } @empty {
+        <p class="empty">
+          No hay entidades que coincidan. Crea la primera o ajusta los filtros.
+        </p>
+        }
+      </div>
+      <div class="pagination">
+        <button (click)="page(-20)" [disabled]="busy() || offset() === 0">
+          Anterior</button
+        ><span
+          >{{ offset() + 1 }}–{{ offset() + entities().length }} de {{ total()
+          }}</span
+        ><button
+          (click)="page(20)"
+          [disabled]="
+                busy() || offset() + 20 >= total() || offset() + 20 > 10000
+              "
+        >
+          Siguiente
+        </button>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="section-title">
+        <h2>{{ selected() ? "Detalle de entidad" : "Nueva entidad" }}</h2>
+        @if (selected()) {
+        <span class="badge"
+          >{{ selected()?.status }} · v{{ selected()?.revision }}</span
+        >
+        }
+      </div>
+      @if (conflict()) {
+      <div class="message error">
+        <p>
+          Existe una revisión más reciente: {{ conflict()?.revision }}, «{{
+          conflict()?.name }}». Tu formulario se conserva.
+        </p>
+        <button (click)="reloadConflict()">
+          Descartar formulario y cargar versión actual
+        </button>
+      </div>
+      }
+      <form (ngSubmit)="saveEntity()">
+        <fieldset
+          [disabled]="
+                !canWrite() || busy() || selected()?.status === 'archived'
+              "
+        >
+          <label
+            >Tipo de entidad<select
+              aria-label="Tipo de entidad"
+              name="entityType"
+              [(ngModel)]="entityDraft.type_id"
+              [disabled]="!!selected()"
+            >
+              @for (t of entityTypes; track t.id) {
+              <option [value]="t.id">{{ t.label }}</option>
+              }
+            </select></label
+          ><label
+            >Código<input
+              name="code"
+              [(ngModel)]="entityDraft.code"
+              [readonly]="!!selected()"
+              required
+              maxlength="64"
+              pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,63}" /></label
+          ><label
+            >Nombre<input
+              name="name"
+              [(ngModel)]="entityDraft.name"
+              required
+              maxlength="200" /></label
+          ><label
+            >Descripción<textarea
+              name="description"
+              [(ngModel)]="entityDraft.description"
+              maxlength="4000"
+              rows="4"
+            ></textarea></label
+          ><label
+            >Clasificación<select
+              aria-label="Clasificación"
+              name="classification"
+              [(ngModel)]="entityDraft.classification"
+            >
+              <option value="internal">Interna</option>
+              <option value="confidential">Confidencial</option>
+              <option value="restricted">Restringida</option>
+            </select></label
+          >
+          @if (canWrite()) {
+          <button class="primary" [disabled]="!!conflict()">
+            {{ selected() ? "Guardar cambios" : "Crear entidad" }}
+          </button>
+          }
+        </fieldset>
+      </form>
+      @if (selected()) {
+      <div class="metadata">
+        <span>ID: {{ selected()?.id }}</span
+        ><span>Tipo: {{ selected()?.type_id }}</span>
+      </div>
+      @if (canWrite() && selected()?.status === "active") {
+      <button class="danger" (click)="archiveEntity()" [disabled]="busy()">
+        Archivar entidad
+      </button>
+      }
+      <h3>Relaciones activas</h3>
+      @for (r of relationships(); track r.id) {
+      <div class="relation">
+        <span>{{ r.type_id }}</span
+        ><button class="link" (click)="navigate(r.source_entity_id)">
+          {{ endpointName(r.source_entity_id) }}</button
+        ><span>→</span
+        ><button class="link" (click)="navigate(r.target_entity_id)">
+          {{ endpointName(r.target_entity_id) }}
+        </button>
+        @if (canWrite()) {
+        <button (click)="archiveRelation(r)" [disabled]="busy()">
+          Archivar relación
+        </button>
+        }
+      </div>
+      } @empty {
+      <p class="muted">Sin relaciones activas.</p>
+      }
+
+      <div class="pager" aria-label="Páginas de relaciones">
+        <button
+          (click)="relationPage(-20)"
+          [disabled]="busy() || relationOffset() === 0"
+        >
+          Relaciones anteriores
+        </button>
+        <span>{{ relationshipRange() }} de {{ relationTotal() }}</span>
+        <button
+          (click)="relationPage(20)"
+          [disabled]="busy() || relationOffset()+20 >= relationTotal() || relationOffset() >= 10000"
+        >
+          Relaciones siguientes
+        </button>
+      </div>
+      }
+    </section>
+  </div>
+  } @if (tab() === "relationships") {
+  <div class="columns">
+    <section class="panel">
+      <h2>Relaciones activas</h2>
+      <p class="muted">Navega a un extremo para ver su detalle.</p>
+      @for (r of relationships(); track r.id) {
+      <div class="relation">
+        <strong>{{ r.type_id }}</strong
+        ><button class="link" (click)="navigate(r.source_entity_id)">
+          {{ endpointName(r.source_entity_id) }}</button
+        ><span>→</span
+        ><button class="link" (click)="navigate(r.target_entity_id)">
+          {{ endpointName(r.target_entity_id) }}
+        </button>
+        @if (canWrite()) {
+        <button (click)="archiveRelation(r)" [disabled]="busy()">
+          Archivar relación
+        </button>
+        }
+      </div>
+      } @empty {
+      <p class="empty">Todavía no hay relaciones activas.</p>
+      }
+      <div class="pager" aria-label="Páginas de relaciones">
+        <button
+          (click)="relationPage(-20)"
+          [disabled]="busy() || relationOffset() === 0"
+        >
+          Relaciones anteriores
+        </button>
+        <span>{{ relationshipRange() }} de {{ relationTotal() }}</span>
+        <button
+          (click)="relationPage(20)"
+          [disabled]="busy() || relationOffset()+20 >= relationTotal() || relationOffset() >= 10000"
+        >
+          Relaciones siguientes
+        </button>
+      </div>
+    </section>
+    @if (canWrite()) {
+    <section class="panel">
+      <h2>Nueva relación</h2>
+      <form (ngSubmit)="saveRelation()">
+        <fieldset [disabled]="busy()">
+          <label
+            >Tipo de relación<select
+              aria-label="Tipo de relación"
+              name="relationType"
+              [(ngModel)]="relationDraft.type_id"
+              (ngModelChange)="relationTypeChanged()"
+            >
+              <option value="core.supports">Aplicación → Capacidad</option>
+              <option value="core.uses">Aplicación → Activo de datos</option>
+            </select></label
+          >
+          <div class="filters">
+            <label
+              >Buscar aplicación<input
+                name="sourceQuery"
+                [(ngModel)]="sourceQuery" /></label
+            ><label
+              >Buscar destino<input
+                name="targetQuery"
+                [(ngModel)]="targetQuery" /></label
+            ><button type="button" (click)="findOptions()">
+              Buscar extremos
+            </button>
+          </div>
+          <label
+            >Aplicación de origen<select
+              aria-label="Aplicación de origen"
+              name="source"
+              [(ngModel)]="relationDraft.source_entity_id"
+              required
+            >
+              <option value="">Selecciona una aplicación</option>
+              @for (e of applications(); track e.id) {
+              <option [value]="e.id">{{ e.code }} · {{ e.name }}</option>
+              }
+            </select></label
+          ><label
+            >Entidad de destino<select
+              aria-label="Entidad de destino"
+              name="target"
+              [(ngModel)]="relationDraft.target_entity_id"
+              required
+            >
+              <option value="">Selecciona el destino</option>
+              @for (e of targets(); track e.id) {
+              <option [value]="e.id">{{ e.code }} · {{ e.name }}</option>
+              }
+            </select></label
+          ><label
+            >Descripción de relación<textarea
+              name="relationDescription"
+              [(ngModel)]="relationDraft.description"
+              maxlength="4000"
+            ></textarea></label
+          ><button class="primary">Crear relación</button>
+        </fieldset>
+      </form>
+    </section>
+    }
+  </div>
+  } @if (tab() === "audit" && isAdmin()) {
+  <section class="panel">
+    <h2>Auditoría del catálogo</h2>
+    <p class="muted">
+      Eventos en orden cronológico, sin contenido de las descripciones.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Instante UTC</th>
+            <th>Operación</th>
+            <th>Recurso</th>
+            <th>Revisión</th>
+            <th>Campos</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of audit(); track a.id) {
+          <tr>
+            <td>{{ a.occurred_at }}</td>
+            <td>{{ a.operation }}</td>
+            <td>{{ a.resource_kind }}<small>{{ a.resource_id }}</small></td>
+            <td>{{ a.previous_revision ?? "—" }} → {{ a.new_revision }}</td>
+            <td>{{ a.changed_fields.join(", ") }}</td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="5">Sin eventos en esta organización.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="pager" aria-label="Páginas de auditoría">
+      <button (click)="auditPage(-20)" [disabled]="busy() || auditOffset()===0">
+        Eventos anteriores
+      </button>
+      <span
+        >{{ auditOffset() }} · {{ audit().length }} de {{ auditTotal() }}</span
+      >
+      <button
+        (click)="auditPage(20)"
+        [disabled]="busy() || auditOffset()+20 >= auditTotal() || auditOffset() >= 10000"
+      >
+        Eventos siguientes
+      </button>
+    </div>
+  </section>
+  } }
+  <footer>
+    Architecture Intelligence Platform · Catálogo manual · Demostración local
+  </footer>
+</main>
