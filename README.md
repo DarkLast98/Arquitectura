@@ -21,6 +21,9 @@ La visión procede del usuario. Los diseños, prioridades y ADR son propuestas p
 | Inteligencia y regulación | [Agentes](docs/architecture/agentes.md), [modelo regulatorio](docs/architecture/regulatorio.md) |
 | Decisiones | [Índice de ADR](docs/decisiones/README.md) |
 | Próxima entrega | [Backlog](docs/delivery/backlog.md), [vertical slice](docs/delivery/primer-incremento.md), [especificación del catálogo](docs/specs/catalogo-arquitectonico.md) |
+| Trabajo B en revisión | [Plan detallado de I1](docs/delivery/plan-implementacion-i1-trabajo-b.md), [convivencia con metamodelo v0.2](docs/delivery/compatibilidad-metamodelo-v02.md) |
+
+Trabajo B prepara I1 en `feature/i1-catalog-foundation` desde `main`, con OIDC configurable propuesto. Esta rama mantiene la entrega documental hasta aprobar el plan; el prototipo anterior de `work/52c653d` permanece separado.
 
 ## Dirección tecnológica inicial
 

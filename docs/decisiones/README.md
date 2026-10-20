@@ -15,6 +15,10 @@ Los ADR técnicos y de diseño están **propuestos**, incluso cuando recogen la 
 | [ADR-0009](0009-documentacion.md) | Markdown, Mermaid y ADR en Git. | Propuesto | Fundación documental. |
 | [ADR-0010](0010-aislamiento-organizaciones.md) | Aislamiento lógico por organización con defensa en base. | Propuesto | I1. |
 | [ADR-0011](0011-core-paquetes.md) | Core transversal y paquetes declarativos versionados. | Propuesto | Fronteras desde I1; motor en I2. |
+| [ADR-0013](0013-oidc-desarrollo-configurable.md) | OIDC configurable con Code + PKCE y BFF. | Propuesto | Trabajo B; requiere acuerdo del proveedor y autorización del plan. |
+| [ADR-0014](0014-versiones-soportadas-i1.md) | Combinación estable y soportada del toolchain. | Propuesto | Trabajo B; fuentes oficiales y revalidación antes de instalar. |
+
+El número 0012 está reservado por el registro local de identidad de `work/52c653d`, que no se importa a esta rama. Los ADR-0013/0014 son propuestas de [PLAN-I1-B](../delivery/plan-implementacion-i1-trabajo-b.md); ningún estado existente cambia con este PR.
 
 ## Evolución
 
