@@ -1,6 +1,6 @@
 # ADR-0008: OpenAPI y JSON Schema versionados
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** RQ-007, RQ-008.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** RQ-007, RQ-008.
 
 ## Contexto y decisión propuesta
 
@@ -15,4 +15,4 @@ Documentar la API HTTP con OpenAPI y definir estructuras de tipos, paquetes y sa
 
 Exige gobernar cambios, dialectos y resolución de referencias, además de validación de dominio y permisos que un esquema no expresa. Verificar entradas, respuestas, errores, tipos de datos y compatibilidad de consumidores. La especificación del catálogo describe los contratos; los archivos ejecutables de contrato se crearán al autorizar I1.
 
-**Aprobación:** pendiente; esta entrega no genera clientes ni servidores.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.

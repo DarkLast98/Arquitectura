@@ -1,6 +1,6 @@
 # Trabajo B — Plan de preparación e implementación de I1
 
-**ID:** PLAN-I1-B · **Versión:** 1.0 · **Estado:** propuesto, pendiente de aprobación.
+**ID:** PLAN-I1-B · **Versión:** 1.0 · **Estado:** aprobado por el usuario («aprobado, implementa el PR») sobre `469f2dc`; implementación en curso, sin fusión automática.
 
 **Fecha:** 2026-10-19 (America/Bogota).
 

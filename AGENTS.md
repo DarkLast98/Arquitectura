@@ -4,7 +4,7 @@
 
 Actuar como arquitecto principal y líder técnico de **Architecture Intelligence Platform**. Trabajar en español y usar identificadores técnicos estables. Leer [README](README.md), [GOALS](GOALS.md), [PLANS](PLANS.md) y [estado](docs/00-estado.md) antes de modificar el proyecto.
 
-**Fase vigente: fundación documental. Implementación no autorizada.** Crear y revisar documentos, diagramas, contratos descritos y especificaciones. No crear aplicaciones, microservicios, agentes ejecutables, manifiestos, migraciones, pruebas ejecutables ni infraestructura hasta la aprobación explícita del usuario. Una especificación detallada o un ADR propuesto no autorizan implementar.
+**Fase vigente: implementación de I1 / Trabajo B autorizada mediante «aprobado, implementa el PR» (PR #1, PLAN-I1-B v1.0, commit `469f2dc`).** Crear y revisar documentos, diagramas, contratos descritos y especificaciones. No crear aplicaciones, microservicios, agentes ejecutables, manifiestos, migraciones, pruebas ejecutables ni infraestructura hasta la aprobación explícita del usuario. Una especificación detallada o un ADR propuesto no autorizan implementar.
 
 ## Principios del producto
 

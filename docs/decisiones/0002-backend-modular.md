@@ -1,6 +1,6 @@
 # ADR-0002: backend como monolito modular inicial
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** RQ-007, RQ-008.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** RQ-007, RQ-008.
 
 ## Contexto
 
@@ -19,4 +19,4 @@ Empezar con un backend .NET desplegable como unidad, organizado por módulos con
 
 Facilita transacciones y operación inicial; exige disciplina para no acceder a escrituras internas de otros módulos. La extracción futura dependerá de autonomía y necesidades medidas. Revisar dependencias y recorrido completo de I1 antes de aceptar. No determina infraestructura ni proyectos de código concretos.
 
-**Aprobación:** pendiente del usuario; no autoriza implementación.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.

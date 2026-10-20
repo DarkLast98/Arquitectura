@@ -1,6 +1,6 @@
 # ADR-0014: combinación de versiones soportadas para I1
 
-**Estado:** Propuesto. **Fecha de consulta:** 2026-10-19 (America/Bogota). **Origen:** Trabajo B, decisión propuesta 2; ADR-0003/0004/0006/0008.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha de consulta:** 2026-10-19 (America/Bogota). **Origen:** Trabajo B, decisión propuesta 2; ADR-0003/0004/0006/0008.
 
 ## Contexto y propuesta
 
@@ -36,4 +36,4 @@ Angular 21 LTS u otra combinación soportada pueden ser alternativas si surge un
 
 La combinación propuesta conserva la dirección tecnológica y no altera tipos, campos o relaciones estables. Una futura actualización mayor tendrá revisión de soporte, contratos y regresión. Neo4j y Python/agentes no son dependencias de I1.
 
-**Aprobación:** pendiente junto con PLAN-I1-B. Ningún ADR anterior cambia a aceptado con esta propuesta.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.

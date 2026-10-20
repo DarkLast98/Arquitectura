@@ -1,6 +1,6 @@
 # ADR-0013: OIDC configurable para el desarrollo de I1
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** Trabajo B, decisión propuesta 1; P-02 y ADR-0010. **Implementación:** no autorizada por este ADR.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** Trabajo B, decisión propuesta 1; P-02 y ADR-0010. **Implementación:** autorizada por el usuario para I1; no despliegue ni fusión.
 
 El número 0012 se reserva para el registro de identidad local existente solo en `work/52c653d`, no incorporado a `main`. Este ADR no cambia su historia ni lo declara sustituido como decisión aceptada.
 
@@ -58,4 +58,4 @@ Probar login/logout real, cambio de perfil sin recompilar, sujeto sin membresía
 
 La fuente técnica consultada es [la documentación oficial ASP.NET Core sobre OIDC y BFF](https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/security/authentication/configure-oidc-web-authentication.md), obtenida mediante su contenido raw. La documentación confirma el patrón; la interoperabilidad con el proveedor elegido sigue pendiente de prueba real.
 
-**Aprobación:** pendiente en el contexto de PLAN-I1-B; este documento no registra aceptación ni implementación.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.

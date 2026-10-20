@@ -1,6 +1,6 @@
 # ADR-0006: PostgreSQL como fuente de verdad
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** RQ-006, RQ-007.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** RQ-006, RQ-007.
 
 ## Contexto y decisión propuesta
 
@@ -15,4 +15,4 @@ Persistir catálogo, relaciones, revisiones y auditoría de mutaciones en Postgr
 
 Consultas relacionales cubren el alcance de I1; no se necesita un segundo almacén para demostrarlo. Verificar versión soportada, compatibilidad del adaptador .NET, transacciones concurrentes, RLS con rol real y estrategias de migración antes de aceptar. Backup, residencia y recuperación productiva se diseñarán antes del piloto, sin desplegarlos en esta fase.
 
-**Aprobación:** pendiente; no hay base provisionada ni esquema aplicado.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.

@@ -1,6 +1,6 @@
 # ADR-0003: Angular y TypeScript para la interfaz
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** RQ-007.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** RQ-007.
 
 ## Contexto y decisión propuesta
 
@@ -15,4 +15,4 @@ La dirección del usuario sitúa la experiencia web en Angular y TypeScript. Pro
 
 Requiere una cadena Node/Angular compatible y mantenida, accesibilidad y manejo consistente de errores y contexto organizacional. Elegir versiones soportadas verificando fuentes oficiales al iniciar I1; no fijar versiones por suposición. Validar el recorrido manual y los estados de acceso denegado y concurrencia.
 
-**Aprobación:** pendiente; no se ha creado ni instalado una aplicación Angular.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.

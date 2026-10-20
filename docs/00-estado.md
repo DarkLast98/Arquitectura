@@ -2,7 +2,7 @@
 
 **Versión documental:** 0.1.0 · **Fecha:** 2026-10-19.
 
-**Fase:** planificación de Trabajo B. **Implementación de Trabajo B:** pendiente de autorización del plan; este PR es exclusivamente documental.
+**Fase:** implementación de Trabajo B. **Autorización:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 del commit `469f2dc`. Se autoriza exclusivamente I1; sin fusión automática ni despliegue productivo.
 
 ## Evidencia y acuerdos
 
@@ -13,7 +13,7 @@
 | 2026-10-19 | Publicación de la fundación y respuesta previa «aprobado». | Existió una implementación local `52c653d` en `work`; no está en `main` ni se importa a esta rama. No equivale a aprobar el nuevo plan con OIDC. |
 | 2026-10-19 | Petición «AIP — Trabajo B: Preparación e implementación de I1». | Autoriza inspección, plan y preparación de PR en `feature/i1-catalog-foundation`; prohíbe código y aceptación de ADR hasta registrar aprobación correspondiente. |
 
-La hipótesis inicial sobre qué producto construir queda resuelta por la definición explícita de AIP. En la línea base de esta rama los ADR técnicos permanecen propuestos. No se registra aprobación de PLAN-I1-B, integración OIDC, código adicional o infraestructura. La creación del PR no amplía la autorización.
+La hipótesis inicial sobre qué producto construir queda resuelta por la definición explícita de AIP. En la línea base de esta rama los ADR técnicos permanecen propuestos. La aprobación explícita posterior del usuario acepta PLAN-I1-B e implementación de I1 en el PR #1. Se aceptan las decisiones aplicables solo dentro de ese alcance; no se autorizan agentes, Neo4j, cambios incompatibles del metamodelo, despliegue productivo o fusión automática.
 
 ## Inspección de Trabajo B
 
@@ -59,3 +59,7 @@ Añadir una entrada solo cuando exista respuesta explícita: fecha, evidencia de
 ## Verificación de esta entrega
 
 Revisión documental de estructura, enlaces locales, estados de ADR, identificadores y trazabilidad; verificación de soporte/compatibilidad con fuentes oficiales citadas en ADR-0014. Se compara SPEC/ontología con la base para confirmar que permanecen intactos. No se ejecutan pruebas de aplicación ni se trasladan resultados del prototipo local a Trabajo B. La entrega se prepara para revisión humana, no como arquitectura o interoperabilidad OIDC aprobadas.
+
+## Autorización de implementación de Trabajo B
+
+2026-10-19 (America/Bogota): usuario «aprobado, implementa el PR». Alcance: PLAN-I1-B v1.0 / PR #1, commit `469f2dc`; B0–B3, SPEC-CAT-001 estable y OIDC configurable. ADR-0002/0003/0004/0006/0008/0009/0010 y fronteras de 0011, ADR-0013/0014 aceptados para I1. Keycloak de desarrollo recomendado queda autorizado bajo ese plan; se concreta 26.8.1 (release oficial estable 2026-10-13), con JDK 21. Clientes, sujetos, certificados y secretos sintéticos se generarán fuera de Git. Se reutilizarán únicamente partes revisadas y compatibles del prototipo; su autenticación local no se importa.

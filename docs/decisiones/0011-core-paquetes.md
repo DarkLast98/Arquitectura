@@ -1,6 +1,6 @@
 # ADR-0011: Core y paquetes declarativos versionados
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** RQ-001, RQ-003, RQ-005.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** RQ-001, RQ-003, RQ-005.
 
 ## Contexto y decisión propuesta
 
@@ -16,4 +16,4 @@ Separar Core transversal, conocimiento sectorial, conocimiento jurisdiccional y 
 
 Separa contenido reutilizable y privado, pero requiere gobierno editorial, compatibilidad, confianza del editor y licencia. I1 solo usa un registro fijo de tipos Core; I2 evalúa activación, conflictos y migración sin borrar historia. Fuentes nuevas no aprueban automáticamente conclusiones legales. Detalles en [paquetes](../architecture/paquetes.md).
 
-**Aprobación:** pendiente; no se construye un motor de paquetes ahora.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.
