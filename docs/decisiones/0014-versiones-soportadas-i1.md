@@ -37,3 +37,7 @@ Angular 21 LTS u otra combinación soportada pueden ser alternativas si surge un
 La combinación propuesta conserva la dirección tecnológica y no altera tipos, campos o relaciones estables. Una futura actualización mayor tendrá revisión de soporte, contratos y regresión. Neo4j y Python/agentes no son dependencias de I1.
 
 **Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.
+
+## Verificación tras aprobación
+
+Las versiones de la tabla se materializan en `global.json`, `.nvmrc` y manifests/lockfiles de .NET/npm; compilación y pruebas reales de [Trabajo B](../delivery/evidencia-i1-trabajo-b.md) demuestran compatibilidad de esa combinación. Adaptador Npgsql 10.0.3 y manejador OIDC 10.0.13. Keycloak 26.8.1/JDK 21 se concreta en ADR-0013. Las referencias a «antes de implementar» describen la propuesta original, no un bloqueo vigente. El soporte declarado no equivale a una certificación productiva.

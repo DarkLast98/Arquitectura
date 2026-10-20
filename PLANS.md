@@ -1,41 +1,43 @@
 # Plan de evolución de AIP
 
-**Estado:** propuesto. Solo la elaboración documental está autorizada. No se asignan fechas ni capacidad de equipo no acordadas.
+**I1 / Trabajo B autorizado e implementado; pendiente revisión del PR #1.** Evidencia: usuario «aprobado, implementa el PR», referido a PLAN-I1-B v1.0 en `469f2dc`. No se autoriza fusión automática, despliegue ni I2.
 
-## Trabajo B — revisión previa a implementación
+## Trabajo B
 
-El [plan detallado PLAN-I1-B v1.0](docs/delivery/plan-implementacion-i1-trabajo-b.md) concreta proyectos, agregados, OIDC configurable, contratos, modelo relacional, autorización, migraciones, pruebas y aceptación. Se prepara en `feature/i1-catalog-foundation` desde la última `main` inspeccionada (`25c4fcc`). Este PR no incorpora código ni cambia ADR a aceptados.
+[Plan aprobado](docs/delivery/plan-implementacion-i1-trabajo-b.md), [resultado verificable](docs/delivery/evidencia-i1-trabajo-b.md), [ejecución local](docs/delivery/ejecucion-local-i1.md). Rama `feature/i1-catalog-foundation`, creada desde `main/25c4fcc`.
 
-La implementación anterior `52c653d` se conserva en `work` y no se importa. La instrucción de Trabajo B exige aprobar el nuevo plan antes de código, con la [frontera estable frente a v0.2](docs/delivery/compatibilidad-metamodelo-v02.md). Las etapas siguientes conservan su alcance orientativo.
-
-| Etapa | Resultado | Condición de salida |
+| Etapa de I1 | Resultado | Estado |
 | --- | --- | --- |
-| D0 · Fundación documental | Producto, arquitectura, ADR, backlog y especificación del catálogo. | Coherencia revisada; pendientes y propuestas visibles. No habilita código. |
-| I1 · Catálogo arquitectónico | Recorrido manual Angular → API .NET modular → PostgreSQL, con entidades y relaciones aisladas por organización. | Casos de aceptación, aislamiento, autorización, concurrencia y auditoría del slice superados. |
-| I2 · Conocimiento extensible | Activación de paquetes versionados y evolución compatible de tipos. | Dependencias, compatibilidad y aislamiento de extensiones comprobados. |
-| I3 · Evidencia, vistas y gobierno | Artefactos, revisiones, decisiones y fuentes con historia; recorrido de estrategia a solución. | Revisiones vinculadas a versiones exactas, evidencia recuperable y vistas trazables. |
-| I4 · Asistencia agéntica | Un caso asistido acotado, con propuestas estructuradas y límites. | Evaluaciones de calidad, seguridad y aprobación antes de persistir. |
-| I5 · Especialización financiera y regulatoria | Paquete financiero piloto y un ámbito jurisdiccional acotado. | Fuentes verificadas, análisis de aplicabilidad, vigencia y revisión profesional. |
+| B0 | Aprobación registrada, versiones fijadas, contratos, OIDC configurable y migraciones locales. | Implementado y verificado. |
+| B1 | Recorrido completo capacidad/aplicación/relación con membresía, RLS, revisión y auditoría. | Implementado y verificado. |
+| B2 | Tres entidades, dos relaciones, operaciones y pantallas de SPEC-CAT-001. | Implementado y verificado. |
+| B3 | Contratos, concurrencia, reinicio y seguridad OIDC; instrucciones y evidencia. | Verificación técnica superada; revisión humana del PR pendiente. |
 
-I2–I5 expresan orden orientativo, no entregas aprobadas. El trabajo regulatorio requiere I2, I3 y el control agéntico de I4; la investigación de fuentes y mercado puede hacerse antes sin implementar.
+Se reutilizaron partes compatibles del prototipo `work/52c653d`; su autenticación por contraseña no se importa y su evidencia no valida esta rama. Cada prueba reportada corresponde a la implementación OIDC actual. La [frontera con v0.2](docs/delivery/compatibilidad-metamodelo-v02.md) se conserva.
 
-## Alcance recomendado para I1
+## Resoluciones y pendientes
 
-Tres tipos de entidad (`core.business_capability`, `core.application`, `core.data_asset`), dos relaciones (`core.supports`, `core.uses`), consulta y mantenimiento manual, archivo lógico, control de concurrencia, auditoría de cambios y aislamiento de dos organizaciones de demostración. Identidad y autorización se incluyen como prerrequisito transversal, no como un módulo comercial completo.
+| ID | Resolución / estado |
+| --- | --- |
+| P-01 | Resuelto: aprobación explícita de PLAN-I1-B v1.0 / PR #1 registrada en [estado](docs/00-estado.md). |
+| P-02 | Resuelto para desarrollo: Keycloak 26.8.1, dos clientes/realms HTTPS, Code + PKCE/PAR y membresías verificadas en servidor/base. |
+| P-03 | Resuelto para I1: versiones soportadas de ADR-0014 fijadas y compiladas; dependencias con lockfiles. |
+| P-04 | Resuelto para I1: SPEC-CAT-001 v0.1.0 aprobada en el alcance del plan y conservada intacta. |
+| P-05–P-10 | Mercado financiero, jurisdicción, agentes, derechos de paquetes, operación productiva y necesidad de grafo continúan diferidos en [estado](docs/00-estado.md). |
 
-Fuera: agentes, Neo4j, paquetes instalables, ingestión normativa, dictámenes regulatorios, microservicios, infraestructura desplegada y conectores externos. Detalle en [slice](docs/delivery/primer-incremento.md) y [especificación](docs/specs/catalogo-arquitectonico.md).
+## Evolución posterior
 
-## Antes de iniciar I1
-
-| Pendiente | Resolución necesaria | Referencia |
+| Etapa | Resultado orientativo | Condición de salida |
 | --- | --- | --- |
-| P-01 | Aprobación explícita de PLAN-I1-B, alcance y decisiones aplicables de Trabajo B; registrar evidencia antes de implementar. | [Estado](docs/00-estado.md) |
-| P-02 | Acordar proveedor OIDC de desarrollo, cliente/callbacks y membresías verificadas en servidor; sin cabeceras de suplantación ni contraseñas locales como fallback. | [ADR-0013](docs/decisiones/0013-oidc-desarrollo-configurable.md), ADR-0010 y especificación |
-| P-03 | Revisar/aprobar la combinación soportada propuesta; revalidar parches antes de fijar manifests y lockfiles tras autorización. | [ADR-0014](docs/decisiones/0014-versiones-soportadas-i1.md), ADR-0003/0004/0006 |
-| P-04 | Acordar los cinco tipos de I1, operaciones, roles y aceptación. Puede quedar cubierto por la aprobación expresa de la especificación. | Backlog y especificación |
+| D0 | Fundación de producto, arquitectura y catálogo. | Completada; decisiones y límites documentados. |
+| I1 | Catálogo manual aislado por organización. | Pruebas superadas y revisión humana del PR. |
+| I2 | Paquetes de conocimiento versionados y activación organizacional. | Alcance/ADR aprobados y compatibilidad con registros I1 demostrada. |
+| I3 | Evidencia, vistas y gobierno desde estrategia hasta solución. | Revisión ligada a versiones exactas y evidencia recuperable. |
+| I4 | Un caso asistido acotado por agentes. | Calidad, límites y aprobación antes de persistir. |
+| I5 | Especialización financiera y corpus jurisdiccional acotado. | Fuentes verificadas, aplicabilidad, vigencia y revisión profesional. |
 
-No bloquean I1: país inicial, Neo4j, proveedor de modelos, runtime de agentes, licenciamiento y arquitectura de despliegue productivo. Sí bloquean sus respectivas entregas futuras.
+I2–I5 son propuestas, sin fechas ni capacidad asignadas. No se introducen Neo4j, agentes o entidades futuras como dependencia del catálogo.
 
-## Forma de avanzar
+## Siguiente incremento recomendado
 
-Cada incremento tendrá requisito, alcance, dependencias, contratos, aceptación y evidencia. Preparar primero la propuesta; implementar solo lo aprobado. Los cambios que alteren límites, acceso a datos o decisiones relevantes requieren revisar su impacto. Mantener en [el backlog](docs/delivery/backlog.md) la prioridad y en [el estado](docs/00-estado.md) la evidencia de aprobación.
+Tras revisar y fusionar I1 mediante decisión humana, preparar **solo la definición de I2**: comparar el metamodelo v0.2 publicado, mapear diferencias con los cinco tipos estables, definir manifiesto/versionado de paquetes y activación por organización y registrar ADR propuestos de compatibilidad/migración. Mantener datos y contratos I1 durante la transición. Implementar I2 requiere una nueva aprobación expresa.

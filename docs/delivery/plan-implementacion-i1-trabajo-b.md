@@ -1,12 +1,12 @@
 # Trabajo B — Plan de preparación e implementación de I1
 
-**ID:** PLAN-I1-B · **Versión:** 1.0 · **Estado:** aprobado por el usuario («aprobado, implementa el PR») sobre `469f2dc`; implementación en curso, sin fusión automática.
+**ID:** PLAN-I1-B · **Versión:** 1.0 · **Estado:** aprobado por el usuario («aprobado, implementa el PR») sobre `469f2dc`; implementación verificada para revisión, sin fusión automática.
 
 **Fecha:** 2026-10-19 (America/Bogota).
 
 **Rama:** `feature/i1-catalog-foundation`, creada desde `main` en `25c4fccdec6304f34b3e068a93740bfbb830f20b`.
 
-Esta entrega contiene planificación y propuestas de decisión. No habilita implementación, aceptación de ADR, despliegue o fusión automática. La autorización del usuario se registrará antes de escribir código.
+Este documento conserva el plan v1.0 revisado antes de codificar. Su aprobación posterior y el resultado implementado se registran en [estado](../00-estado.md) y [evidencia](evidencia-i1-trabajo-b.md). Las condiciones previas del cuerpo histórico ya resueltas no bloquean I1; despliegue, I2 y fusión automática siguen fuera del alcance.
 
 ## 1. Inspección y línea base
 
@@ -245,3 +245,11 @@ Residencia, SLAs, recuperación, identidad productiva, modelos/IA, licencias de 
 PR documental hacia `main`: plan, propuestas OIDC/toolchain y regla de convivencia con v0.2, con enlaces desde PLANS y estado. No cambia las definiciones estables ni los estados de ADR anteriores. Revisión de enlaces, diff exclusivamente Markdown y comparación exacta de SPEC/ontología frente a la base.
 
 La respuesta de aprobación debe identificar PLAN-I1-B v1.0 o el commit del PR, decisiones aceptadas y condiciones pendientes. Publicar la rama, abrir/revisar el PR o aprobar esta documentación como texto no se interpreta automáticamente como permiso de desplegar o fusionar. Después de registrar una autorización de implementación ya recibida, continuar B0–B3 sin pedirla de nuevo para las mismas acciones.
+
+## Resultado tras aprobación de v1.0
+
+La autorización posterior «aprobado, implementa el PR» aplica al plan de `469f2dc`. El cuerpo anterior conserva la propuesta revisada: sus frases sobre no codificar/no aceptar ADR describen el estado previo a esa autorización. El [estado vigente](../00-estado.md) y la [evidencia ejecutada](evidencia-i1-trabajo-b.md) registran el resultado actual.
+
+Concreciones de implementación dentro del alcance: un host y una biblioteca de dominio BCL; carpetas lógicas sin capas vacías; Angular agrupado en un componente de catálogo pequeño; integración API/base en Python independiente del servidor y contratos en Node, junto a dominio xUnit y navegador Playwright. Esta distribución comprueba las mismas invariantes con clientes reales. El puerto `ICatalogStore` lo implementa la sesión Npgsql transaccional. Auditoría escribe únicamente su tabla mediante su módulo; la composición HTTP coordina la transacción y membresía.
+
+Migraciones 001–005 materializan M001–M005; 006 reduce UPDATE a columnas mutables sin modificar migraciones ya aplicadas. Contratos quedan bajo `contracts/openapi/` y `contracts/schemas/catalog/0.1.0/`. Keycloak 26.8.1/JDK 21 concreta el proveedor recomendado. No hay servicio Python de producto, grafo ni entidades adicionales. La [guía local](ejecucion-local-i1.md) documenta los procesos y límites.

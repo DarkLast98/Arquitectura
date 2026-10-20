@@ -1,6 +1,6 @@
 # Backlog priorizado
 
-**Estado:** propuesta de trabajo, no autorización ni estimación. P0 = necesario para el slice; P1 = evolución principal; P2 = condicionado a evidencia. Todas las tareas de implementación están pendientes de aprobación.
+**Estado:** BL-00–BL-05 implementados y verificados para revisión del PR #1; futuras tareas propuestas, sin autorización ni estimación. P0 = necesario para el slice; P1 = evolución principal; P2 = condicionado a evidencia. La [aprobación de Trabajo B](../00-estado.md) cubre únicamente I1.
 
 | ID | Prioridad / etapa | Resultado y aceptación | Dependencias | Requisitos |
 | --- | --- | --- | --- | --- |
@@ -25,4 +25,4 @@ Dentro de I1, cerrar primero identidad/contexto y contratos; construir un recorr
 
 P1 no implica alcance de I1. No hay fechas, puntos ni promesas de entrega. El resultado de entrevistas puede cambiar el orden posterior mediante una decisión documentada. El grafo nunca es prerrequisito implícito del catálogo.
 
-**Siguiente trabajo recomendado:** revisar y aprobar [I1](primer-incremento.md) y [su especificación](../specs/catalogo-arquitectonico.md), resolviendo identidad y versiones. Hasta entonces, solo refinamiento documental.
+**Siguiente trabajo recomendado:** revisión humana del PR #1 y de [su evidencia](evidencia-i1-trabajo-b.md). Después, definir I2, comparar v0.2 publicado y proponer compatibilidad de paquetes antes de autorizar ese desarrollo.

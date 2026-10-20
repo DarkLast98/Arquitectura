@@ -1,4 +1,12 @@
-# Historial documental
+# Historial de AIP
+
+## I1 / Trabajo B — implementación para revisión — 2026-10-20 UTC
+
+- Aprobación explícita de PLAN-I1-B v1.0 registrada; ADR aplicables aceptados únicamente para I1.
+- Catálogo Angular/.NET modular/PostgreSQL con tres entidades y dos relaciones, OIDC configurable Keycloak, membresías/RLS y permisos por columna.
+- Revisión optimista, integridad de archivo/relaciones y auditoría transaccional; contratos OpenAPI/JSON Schema y seis migraciones con checksums.
+- Pruebas reales de dominio, API/base y navegador, OIDC negativo/JWKS/PAR, reinicio y migraciones; [evidencia](docs/delivery/evidencia-i1-trabajo-b.md) e [instrucciones locales](docs/delivery/ejecucion-local-i1.md).
+- SPEC/ontología estable intactas; sin agentes, Neo4j, despliegue cloud ni fusión automática.
 
 ## En revisión — Trabajo B — 2026-10-19
 
@@ -16,4 +24,4 @@
 - Backlog incremental, primer vertical slice y especificación del catálogo arquitectónico.
 - Conservación del acuerdo de definir antes de implementar; índices iniciales redirigidos a las fuentes canónicas.
 
-Versión documental, sin implementación ni despliegue. Un commit no implica aprobación del diseño.
+La sección 0.1.0 corresponde a la fundación documental. La aprobación de I1 se registra por separado; un commit no implica aceptación humana de su resultado.

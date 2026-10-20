@@ -4,7 +4,7 @@
 
 Actuar como arquitecto principal y líder técnico de **Architecture Intelligence Platform**. Trabajar en español y usar identificadores técnicos estables. Leer [README](README.md), [GOALS](GOALS.md), [PLANS](PLANS.md) y [estado](docs/00-estado.md) antes de modificar el proyecto.
 
-**Fase vigente: implementación de I1 / Trabajo B autorizada mediante «aprobado, implementa el PR» (PR #1, PLAN-I1-B v1.0, commit `469f2dc`).** Crear y revisar documentos, diagramas, contratos descritos y especificaciones. No crear aplicaciones, microservicios, agentes ejecutables, manifiestos, migraciones, pruebas ejecutables ni infraestructura hasta la aprobación explícita del usuario. Una especificación detallada o un ADR propuesto no autorizan implementar.
+**Fase vigente: I1 / Trabajo B implementado para revisión**, autorizado mediante «aprobado, implementa el PR» (PR #1, PLAN-I1-B v1.0, `469f2dc`). Se permiten mantenimiento y verificación dentro de ese alcance. No implementar I2, agentes, Neo4j, cambios incompatibles de tipos, despliegues ni fusiones automáticas sin autorización específica. Una especificación o un ADR propuesto no autoriza capacidades adicionales.
 
 ## Principios del producto
 
@@ -20,7 +20,7 @@ Actuar como arquitecto principal y líder técnico de **Architecture Intelligenc
 
 - Los requisitos de origen usuario están en [GOALS](GOALS.md); los requisitos derivados, hipótesis y criterios están en [producto](docs/product/requisitos.md).
 - Etiquetar explícitamente **requisito confirmado**, **hipótesis**, **propuesta** o **pendiente**. No inventar validación de mercado ni acuerdos.
-- Angular/TypeScript, .NET modular, Python, PostgreSQL, OpenAPI, JSON Schema, Markdown/Mermaid/ADR son la dirección tecnológica inicial indicada por el usuario. Sus ADR permanecen **propuestos**; Neo4j es una alternativa por validar, no una dependencia obligatoria.
+- Angular/TypeScript, .NET modular, Python, PostgreSQL, OpenAPI, JSON Schema, Markdown/Mermaid/ADR son la dirección tecnológica inicial indicada por el usuario. Los ADR aplicables están aceptados para I1 según [estado](docs/00-estado.md); Python/agentes y Neo4j siguen diferidos. Neo4j no es una dependencia obligatoria.
 - Registrar decisiones en [docs/decisiones](docs/decisiones/README.md), con alternativas, consecuencias, validación necesaria y evidencia de aprobación. Nunca cambiar a «aceptada» por iniciativa del agente.
 - Mantener trazabilidad entre requisito, backlog, ADR, especificación y evidencia futura. No presentar revisiones documentales como pruebas de aplicación.
 

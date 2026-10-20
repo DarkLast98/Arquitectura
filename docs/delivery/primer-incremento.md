@@ -1,6 +1,6 @@
 # I1 — Catálogo arquitectónico manual por organización
 
-**Estado:** propuesto, implementación no autorizada. **Backlog:** BL-00–BL-05. **Especificación:** [catálogo](../specs/catalogo-arquitectonico.md).
+**Estado:** aprobado e implementado para revisión en PR #1; ver [autorización](../00-estado.md) y [evidencia](evidencia-i1-trabajo-b.md). **Backlog:** BL-00–BL-05. **Especificación:** [catálogo](../specs/catalogo-arquitectonico.md).
 
 ## Resultado exacto
 
@@ -10,7 +10,7 @@ Es un recorrido Angular → API .NET modular → PostgreSQL. No es solo un CRUD 
 
 ## Incluido
 
-- Dos organizaciones de demostración, usuarios autenticados y membresías verificadas; mecanismo de identidad pendiente de acuerdo.
+- Dos organizaciones de demostración, usuarios autenticados y membresías verificadas; OIDC configurable Keycloak de desarrollo según ADR-0013.
 - Roles `organization_admin`, `architect`, `reader`; sin interfaz de administración de membresías.
 - Registro fijo `core.catalog` v0.1.0 con tres tipos de entidad y dos relaciones dirigidas.
 - Crear, listar, consultar, editar campos permitidos y archivar entidades; crear, consultar y archivar relaciones.

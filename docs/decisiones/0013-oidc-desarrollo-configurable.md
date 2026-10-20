@@ -59,3 +59,7 @@ Probar login/logout real, cambio de perfil sin recompilar, sujeto sin membresía
 La fuente técnica consultada es [la documentación oficial ASP.NET Core sobre OIDC y BFF](https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/security/authentication/configure-oidc-web-authentication.md), obtenida mediante su contenido raw. La documentación confirma el patrón; la interoperabilidad con el proveedor elegido sigue pendiente de prueba real.
 
 **Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.
+
+## Concreción aprobada y verificada
+
+Keycloak 26.8.1 de desarrollo con Java 21; dos realms/clientes configurables por JSON privado, callback HTTPS y S256 obligatorio. [Release oficial](https://github.com/keycloak/keycloak/releases/tag/26.8.1), checksum y ejecución en [guía local](../delivery/ejecucion-local-i1.md). Manejador oficial ASP.NET Core OpenIdConnect 10.0.13, cookies protegidas y separación por issuer/cliente. Vinculación interna después de validar el protocolo completo; no crea membresías. La [evidencia de I1](../delivery/evidencia-i1-trabajo-b.md) incluye Keycloak real, PAR/JWKS y respuestas inválidas de un proveedor de fallos separado. No autoriza operación productiva del IdP.

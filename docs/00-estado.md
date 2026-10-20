@@ -1,65 +1,47 @@
 # Estado de AIP
 
-**Versión documental:** 0.1.0 · **Fecha:** 2026-10-19.
+**Fecha:** 2026-10-20 UTC. **Fase:** I1 / Trabajo B implementado y verificado para revisión del PR #1. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
 
-**Fase:** implementación de Trabajo B. **Autorización:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 del commit `469f2dc`. Se autoriza exclusivamente I1; sin fusión automática ni despliegue productivo.
+## Evidencia y autorización
 
-## Evidencia y acuerdos
-
-| Fecha | Fuente y acuerdo | Alcance |
+| Fecha | Fuente | Alcance |
 | --- | --- | --- |
-| 2026-10-19 | Instrucción inicial del usuario; [ADR-0001](decisiones/0001-definir-antes-de-implementar.md). | Definir antes de codificar. |
-| 2026-10-19 | Instrucción del usuario que identifica AIP y su visión, dirección tecnológica y restricciones. | Confirma RQ-001–RQ-008 de [GOALS](../GOALS.md) y autoriza exclusivamente la fundación documental. |
-| 2026-10-19 | Publicación de la fundación y respuesta previa «aprobado». | Existió una implementación local `52c653d` en `work`; no está en `main` ni se importa a esta rama. No equivale a aprobar el nuevo plan con OIDC. |
-| 2026-10-19 | Petición «AIP — Trabajo B: Preparación e implementación de I1». | Autoriza inspección, plan y preparación de PR en `feature/i1-catalog-foundation`; prohíbe código y aceptación de ADR hasta registrar aprobación correspondiente. |
+| 2026-10-19 | Definición del producto por el usuario y [ADR-0001](decisiones/0001-definir-antes-de-implementar.md). | Definir antes de codificar; fundación documental de AIP. |
+| 2026-10-19 | Publicación documental y aprobación anterior. | Prototipo local `work/52c653d`, conservado; no valida OIDC de Trabajo B. |
+| 2026-10-19 | Solicitud «AIP — Trabajo B: Preparación e implementación de I1». | Plan y PR desde la última main; no aceptar ADR ni codificar sin autorización posterior. |
+| 2026-10-20 UTC / 2026-10-19 America/Bogota | Usuario «aprobado, implementa el PR», referido al PR [#1](https://github.com/DarkLast98/Arquitectura/pull/1), PLAN-I1-B v1.0 en `469f2dc`. | Autoriza B0–B3 e implementación exclusiva de SPEC-CAT-001, con OIDC configurable. Acepta ADR-0002/0003/0004/0006/0008/0009/0010, fronteras de 0011, y ADR-0013/0014 para I1. Sin agentes, Neo4j, cambios incompatibles del metamodelo, despliegue productivo o fusión automática. |
 
-La hipótesis inicial sobre qué producto construir queda resuelta por la definición explícita de AIP. En la línea base de esta rama los ADR técnicos permanecen propuestos. La aprobación explícita posterior del usuario acepta PLAN-I1-B e implementación de I1 en el PR #1. Se aceptan las decisiones aplicables solo dentro de ese alcance; no se autorizan agentes, Neo4j, cambios incompatibles del metamodelo, despliegue productivo o fusión automática.
+El commit `6a187c1` registra la autorización antes de los commits de implementación. Se concreta el proveedor de desarrollo recomendado en Keycloak **26.8.1**, release oficial estable de 2026-10-13, ejecutado con JDK 21. Certificados, secretos y sujetos de prueba se preparan localmente fuera de Git. La visión comercial y los diseños futuros no se consideran validados por estas pruebas.
 
-## Inspección de Trabajo B
+## Resultado de Trabajo B
 
-Rama creada desde `main` en `25c4fccdec6304f34b3e068a93740bfbb830f20b`. Solo se observó `main` al consultar las ramas remotas; no hay fuente publicada del metamodelo v0.2 para comparar todavía. SPEC-CAT-001 y ontología estable de I1 se conservan sin cambios. El commit local `52c653d` queda recuperable en `work` y sus resultados no se presentan como validación de OIDC ni de esta rama.
+- Un host .NET modular sirve catálogo y Angular por HTTPS; OIDC oficial Code + PKCE/PAR, cookie segura y antiforgery. Sin contraseñas en AIP ni tokens OIDC en el navegador.
+- PostgreSQL transaccional con sujeto `(issuer,sub)`, membresías activas, RLS forzada, rol no propietario, permisos por columna, FKs organizacionales, revisión optimista y auditoría atómica.
+- Tres tipos de entidad y dos relaciones estables; altas, consultas, edición permitida, archivo lógico, filtros/páginas y errores uniformes.
+- Verificación completa: **5** pruebas de dominio, **11** API/base, **19** navegador; OpenAPI/JSON Schema, reinicio de API, migraciones repetibles y fallo seguro de configuración/IdP. [Evidencia, comandos y límites](delivery/evidencia-i1-trabajo-b.md).
+- [Ejecución local](delivery/ejecucion-local-i1.md) documentada. No se despliega infraestructura ni se fusiona el PR.
 
-Propuesta principal: [PLAN-I1-B v1.0](delivery/plan-implementacion-i1-trabajo-b.md). Cambios de autenticación/versiones: ADR-0013 y ADR-0014, ambos propuestos. Frontera del trabajo paralelo: [compatibilidad v0.2](delivery/compatibilidad-metamodelo-v02.md).
+## Línea base y coordinación
 
-## Documentación preparada
+`feature/i1-catalog-foundation` parte de `main/25c4fccdec6304f34b3e068a93740bfbb830f20b`. La última consulta remota sigue mostrando main en esa base y esta rama; no se dispone de v0.2 publicado para comparar semántica. [SPEC-CAT-001](specs/catalogo-arquitectonico.md) y [ontología estable](architecture/ontologia.md) permanecen intactas. Sus notas originales de propuesta son históricas; esta autorización posterior define el estado de I1.
 
-| Área | Estado de contenido | Fuente canónica |
-| --- | --- | --- |
-| Visión y dirección | Confirmadas por usuario; personas y mercado propuestos/hipotéticos. | [Producto](product/vision.md), [GOALS](../GOALS.md) |
-| Alcance y requisitos derivados | Propuestos. | [Requisitos](product/requisitos.md), [alcance financiero](product/alcance-financiero.md) |
-| Arquitectura y ontología | Propuestas. | [Referencia](architecture/referencia.md), [ontología](architecture/ontologia.md) |
-| Agentes y regulación | Modelos propuestos, sin implementación ni fuentes normativas verificadas. | [Agentes](architecture/agentes.md), [regulación](architecture/regulatorio.md) |
-| Decisiones | ADR-0001 de proceso aceptado; ADR-0002–0011 propuestos. | [ADR](decisiones/README.md) |
-| Backlog y catálogo | Especificados para revisión, no aprobados. | [Backlog](delivery/backlog.md), [SPEC-CAT-001](specs/catalogo-arquitectonico.md) |
-| Trabajo B | Plan detallado y propuestas OIDC/toolchain pendientes de aprobación; sin implementación. | [PLAN-I1-B](delivery/plan-implementacion-i1-trabajo-b.md) |
+Se reutilizó código compatible de catálogo/interfaz del prototipo local, sustituyendo completamente su identidad por OIDC y verificando de nuevo esta rama. No se importan ADR de identidad local ni resultados de pruebas previas. [Regla de compatibilidad con v0.2](delivery/compatibilidad-metamodelo-v02.md).
 
 ## Pendientes
 
-| ID | Asunto | Cuándo bloquea |
+| ID | Asunto | Estado / cuándo bloquea |
 | --- | --- | --- |
-| P-01 | Aprobación expresa de PLAN-I1-B, alcance y decisiones aplicables de Trabajo B. | Todo código nuevo de Trabajo B. |
-| P-02 | Proveedor OIDC de desarrollo, registro de cliente/callbacks HTTPS y membresías; propuesta en ADR-0013. | Implementación de acceso e integración del slice. |
-| P-03 | Revisar combinación soportada propuesta en ADR-0014 y volver a validar parches al autorizar. | Preparación del toolchain de I1. |
-| P-04 | Acordar tipos, operaciones, roles y aceptación de SPEC-CAT-001. Puede cubrirse al aprobar esa versión. | Implementación del catálogo. |
-| P-05 | Validar comprador, usuario y subsegmento financiero con evidencia. | Priorización comercial y paquete financiero piloto; no catálogo genérico. |
-| P-06 | Seleccionar jurisdicción, materia, fuentes oficiales verificables y revisores competentes. | Implementación y evaluación regulatoria. |
-| P-07 | Acordar proveedores de modelos, política de datos, framework y evaluación agéntica. | Ejecución de agentes; no I1. |
-| P-08 | Acordar licencias/derechos de contenido y confianza editorial de paquetes. | Distribución e instalación de paquetes. |
-| P-09 | Definir residencia, retención, recuperación, disponibilidad y modalidad comercial/de despliegue. | Piloto productivo con datos reales. |
-| P-10 | Demostrar necesidad, aislamiento y viabilidad comercial de Neo4j. | Solo una eventual adopción de grafo. |
+| P-01 | Aprobación de Trabajo B. | Resuelto para I1 mediante la evidencia anterior. |
+| P-02 | IdP/cliente/membresías de desarrollo. | Resuelto para I1; operación productiva permanece diferida. |
+| P-03 | Versiones soportadas y compatibilidad. | Resuelto para I1; seguir mantenimiento de parches mediante revisión. |
+| P-04 | Tipos, operaciones, roles y aceptación del catálogo. | Resuelto para I1; revisión del resultado del PR pendiente. |
+| P-05 | Validar comprador, usuario y subsegmento financiero. | Priorización comercial y paquete financiero piloto. |
+| P-06 | Jurisdicción, materia, fuentes oficiales y revisores. | Implementación y evaluación regulatoria. |
+| P-07 | Proveedores, datos, framework y evaluación agéntica. | Ejecución de agentes; no I1. |
+| P-08 | Licencias, derechos de contenido y confianza editorial. | Distribución/instalación de paquetes. |
+| P-09 | Residencia, retención, recuperación, disponibilidad y operación de identidad/secretos. | Piloto productivo con datos reales. |
+| P-10 | Necesidad, aislamiento y viabilidad comercial de Neo4j. | Solo eventual adopción de grafo. |
 
-## Próxima acción recomendada
+## Próxima acción
 
-Revisar [PLAN-I1-B](delivery/plan-implementacion-i1-trabajo-b.md), sus ADR propuestos y el PR documental. Registrar aprobación del alcance/decisiones y resolver P-02/P-03 antes del código dependiente. Mantener I1 independiente de v0.2; no fusionar automáticamente. El resto queda diferido según [PLANS](../PLANS.md).
-
-## Registro de aprobación futura
-
-Añadir una entrada solo cuando exista respuesta explícita: fecha, evidencia de conversación, incremento, versión/commit o secciones cubiertas, ADR aceptados, exclusiones y condiciones. Si la autorización ya existe, no pedirla de nuevo. Hasta entonces no cambiar la fase.
-
-## Verificación de esta entrega
-
-Revisión documental de estructura, enlaces locales, estados de ADR, identificadores y trazabilidad; verificación de soporte/compatibilidad con fuentes oficiales citadas en ADR-0014. Se compara SPEC/ontología con la base para confirmar que permanecen intactos. No se ejecutan pruebas de aplicación ni se trasladan resultados del prototipo local a Trabajo B. La entrega se prepara para revisión humana, no como arquitectura o interoperabilidad OIDC aprobadas.
-
-## Autorización de implementación de Trabajo B
-
-2026-10-19 (America/Bogota): usuario «aprobado, implementa el PR». Alcance: PLAN-I1-B v1.0 / PR #1, commit `469f2dc`; B0–B3, SPEC-CAT-001 estable y OIDC configurable. ADR-0002/0003/0004/0006/0008/0009/0010 y fronteras de 0011, ADR-0013/0014 aceptados para I1. Keycloak de desarrollo recomendado queda autorizado bajo ese plan; se concreta 26.8.1 (release oficial estable 2026-10-13), con JDK 21. Clientes, sujetos, certificados y secretos sintéticos se generarán fuera de Git. Se reutilizarán únicamente partes revisadas y compatibles del prototipo; su autenticación local no se importa.
+Revisar el PR #1 y la evidencia de I1; cualquier fusión corresponde a una decisión humana. Después, definir I2 y comparar v0.2 cuando exista una fuente publicada, sin alterar contratos I1 ni comenzar ese desarrollo por esta autorización. [PLANS](../PLANS.md) mantiene el alcance recomendado.

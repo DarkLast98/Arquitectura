@@ -1,6 +1,6 @@
 # I1 y metamodelo v0.2: frontera de compatibilidad
 
-**Estado:** propuesta de coordinación de Trabajo B. **Fecha:** 2026-10-19 (America/Bogota).
+**Estado:** frontera aplicada en I1 / Trabajo B. **Fecha:** 2026-10-19 (America/Bogota).
 
 ## Evidencia disponible
 
@@ -37,3 +37,7 @@ Estas filas son criterios de evaluación, no hallazgos sobre el trabajo paralelo
 Antes de cada PR de implementación, comparar definiciones, ejemplos y pruebas de contrato con la línea estable. Si `main` recibe v0.2, analizar su diff y rebase/merge solo después de preservar I1 y resolver conflictos con evidencia. No resetear commits de otros trabajos ni dar por aprobado un cambio de ontología.
 
 La aprobación del plan B no aprueba v0.2; la aprobación de v0.2 no migra datos ni cambia contratos I1. Una incompatibilidad real se documentará en un ADR propuesto del siguiente incremento, con fuente exacta, alternativas, transición y aceptación requerida.
+
+## Comprobación de la entrega
+
+2026-10-20 UTC: nueva consulta remota muestra `main/25c4fcc` y `feature/i1-catalog-foundation`; no aparece una fuente v0.2 publicada. SPEC-CAT-001 y ontología no tienen diff respecto de la base. Pruebas de dominio/contrato rechazan tipos y versiones futuros; se mantienen exactamente tres entidades y dos relaciones. Se reutilizan partes compatibles de catálogo/interfaz de `work`, sin su autenticación local. No se afirma compatibilidad semántica con un documento v0.2 no disponible.
