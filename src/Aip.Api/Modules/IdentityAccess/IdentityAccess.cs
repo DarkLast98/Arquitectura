@@ -69,19 +69,34 @@ public static class IdentityAccess
                     context.ProtocolMessage.ClientId = client;
                     return Task.CompletedTask;
                 };
+                options.Events.OnTokenValidated = context =>
+                {
+                    // These claims are cryptographically validated here, then standard claim actions
+                    // remove issuer. Carry only identity metadata until full protocol validation ends.
+                    var issuerClaim = context.Principal?.FindFirstValue("iss");
+                    var subject = context.Principal?.FindFirstValue("sub");
+                    if (issuerClaim != authority || string.IsNullOrEmpty(subject)) context.Fail("Identidad no válida");
+                    else
+                    {
+                        context.Properties!.Items["aip:verified_issuer"] = issuerClaim;
+                        context.Properties.Items["aip:verified_subject"] = subject;
+                    }
+                    return Task.CompletedTask;
+                };
                 // Resolve identity only after the complete OIDC protocol (including nonce) succeeds.
                 options.Events.OnTicketReceived = async context =>
                 {
                     var principal = context.Principal!;
-                    var sub = principal.FindFirstValue("sub");
-                    var iss = principal.FindFirstValue("iss");
-                    if (string.IsNullOrEmpty(sub) || iss != authority) { context.Fail("Identidad no válida"); return; }
+                    context.Properties!.Items.TryGetValue("aip:verified_subject", out var sub);
+                    context.Properties.Items.TryGetValue("aip:verified_issuer", out var iss);
+                    context.Properties.Items.Remove("aip:verified_subject"); context.Properties.Items.Remove("aip:verified_issuer");
+                    if (string.IsNullOrEmpty(sub) || iss != authority) { context.HandleResponse(); await WriteAuthFailure(context.HttpContext); return; }
                     await using var db = new DbSession(context.HttpContext.RequestServices.GetRequiredService<NpgsqlDataSource>());
                     await db.Begin(Guid.Empty);
                     await db.Execute("SELECT set_config('app.issuer',@issuer,true),set_config('app.external_subject',@subject,true)", ("issuer", iss), ("subject", sub));
                     await db.Execute("INSERT INTO identity.subjects(id,issuer,external_subject) VALUES(@id,@issuer,@subject) ON CONFLICT(issuer,external_subject) DO NOTHING", ("id", Guid.NewGuid()), ("issuer", iss), ("subject", sub));
                     var id = await db.Scalar("SELECT id FROM identity.subjects WHERE issuer=@issuer AND external_subject=@subject AND status='active'", ("issuer", iss), ("subject", sub));
-                    if (id is not Guid actor) { context.Fail("Identidad no habilitada"); return; }
+                    if (id is not Guid actor) { context.HandleResponse(); await WriteAuthFailure(context.HttpContext); return; }
                     await db.Transaction.CommitAsync();
                     // The BFF retains only identity, never access/refresh/ID tokens or provider roles.
                     context.Principal = new ClaimsPrincipal(new ClaimsIdentity([

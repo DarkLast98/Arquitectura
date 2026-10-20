@@ -166,3 +166,12 @@ test("OIDC-02,06: retorno externo y cabeceras de suplantación no conceden acces
     ).status(),
   ).toBe(401);
 });
+
+ test('OIDC-05: sujeto revocado no recibe cookie de sesión',async({page})=>{
+  execFileSync('python3',['../tests/oidc_admin.py','revoke-subject']);
+  try{
+   await page.goto('/auth/login');await page.locator('#username').fill('reader');await page.locator('#password').fill(secrets.passwords.reader);await page.locator('#kc-login').click();
+   await expect(page.locator('body')).toContainText('AUTH_OIDC');
+   expect((await page.context().cookies()).some(c=>c.name==='__Host-aip.session')).toBe(false);
+  }finally{execFileSync('python3',['../tests/oidc_admin.py','restore-subject']);}
+ });

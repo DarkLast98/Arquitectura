@@ -127,7 +127,11 @@ class Handler(BaseHTTPRequestHandler):
         now = int(time.time())
         claims = {
             "iss": ISSUER,
-            "sub": "00000000-0000-4000-8000-000000000001",
+            "sub": (
+                "00000000-0000-4000-8000-000000000001"
+                if MODE == "valid"
+                else "untrusted-" + MODE
+            ),
             "aud": "negative-test-client",
             "exp": now + 300,
             "iat": now,

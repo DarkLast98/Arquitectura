@@ -152,8 +152,15 @@ try:
         ["npx", "playwright", "test", "--project", "catalog", "--no-deps"], ROOT / "web"
     )
     sys.path.insert(0, str(ROOT / "tests"))
-    from test_catalog import Client, A
+    from test_catalog import Client, A, db_sql
 
+    assert (
+        db_sql(
+            "SELECT count(*) FROM identity.subjects WHERE issuer='https://localhost:7443' AND external_subject LIKE 'untrusted-%';",
+            owner=True,
+        ).stdout.strip()
+        == "0"
+    ), "Invalid OIDC response provisioned an identity"
     client = Client("architect")
     code = "RESTART-" + uuid.uuid4().hex[:12].upper()
     status, row, _ = client.api(
@@ -219,7 +226,7 @@ try:
         "result": "PASS",
         "domain_tests": 5,
         "api_database_tests": 11,
-        "browser_tests": 18,
+        "browser_tests": 19,
         "contracts": "OpenAPI 3.1 + JSON Schema 2020-12",
         "restart": "PASS",
         "fail_closed": "PASS",
