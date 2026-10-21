@@ -12,7 +12,9 @@ var configPath = Environment.GetEnvironmentVariable("AIP_CONFIG") ?? throw new I
 builder.Configuration.AddJsonFile(Path.GetFullPath(configPath), optional: false);
 builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = 65536);
 builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower);
-builder.Services.AddSingleton(new PostgresConnections(builder.Configuration.GetConnectionString("Aip") ?? throw new InvalidOperationException("Falta ConnectionStrings:Aip")));
+var connectionString = builder.Configuration.GetConnectionString("Aip") ?? throw new InvalidOperationException("Falta ConnectionStrings:Aip");
+// Factory registration gives the container ownership of the pool lifetime.
+builder.Services.AddSingleton(_ => new PostgresConnections(connectionString));
 builder.Services.AddScoped<DbSession>();
 builder.Services.AddScoped<IOrganizationTransaction>(s => s.GetRequiredService<DbSession>());
 builder.Services.AddScoped<ICatalogRepository, PostgresCatalog>();
