@@ -300,16 +300,12 @@ owner_sql(
 )
 if owner_sql("SELECT 1 FROM pg_database WHERE datname='aip_i1'").strip() != "1":
     owner_sql("CREATE DATABASE aip_i1;")
-script = "BEGIN; SELECT pg_advisory_xact_lock(134345134); CREATE TABLE IF NOT EXISTS public.schema_migrations(version text PRIMARY KEY,checksum text NOT NULL,applied_at timestamptz NOT NULL DEFAULT now());\n"
-for p in sorted(
-    (ROOT / "src/Aip.Api/Infrastructure/Postgres/Migrations").glob("*.sql")
-):
-    text = p.read_text()
-    digest = hashlib.sha256(p.read_bytes()).hexdigest()
-    version = p.stem
-    script += f"DO $migration$ BEGIN IF EXISTS(SELECT FROM public.schema_migrations WHERE version='{version}' AND checksum<>'{digest}') THEN RAISE EXCEPTION 'Migration checksum mismatch: {version}'; END IF; IF NOT EXISTS(SELECT FROM public.schema_migrations WHERE version='{version}') THEN EXECUTE $body${text}$body$; INSERT INTO public.schema_migrations(version,checksum) VALUES('{version}','{digest}'); END IF; END $migration$;\n"
-script += "COMMIT;"
-owner_sql(script, "aip_i1")
+from postgres_migrations import build_migration_sql
+
+owner_sql(
+    build_migration_sql(ROOT / "src/Aip.Api/Infrastructure/Postgres/Migrations"),
+    "aip_i1",
+)
 # Deterministic identity mappings are fixtures, not auto-provisioning permissions at login.
 seed = "INSERT INTO identity.organizations(id,name) VALUES('00000000-0000-4000-8000-00000000000a','Organización A · Demostración'),('00000000-0000-4000-8000-00000000000b','Organización B · Demostración') ON CONFLICT DO NOTHING;\n"
 for n, role in enumerate(["organization_admin", "architect", "reader", "reader"], 1):

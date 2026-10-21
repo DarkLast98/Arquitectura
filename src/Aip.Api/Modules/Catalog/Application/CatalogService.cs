@@ -98,9 +98,9 @@ public sealed class CatalogService(ICatalogStore db, AuditWriter audit)
             ["limit", "offset", "type_id", "status", "source_entity_id", "target_entity_id", "entity_id"] :
             ["limit", "offset", "type_id", "status", "code", "q"];
         if (request.Query.Any(x => !allowed.Contains(x.Key) || x.Value.Count != 1)) throw FilterError();
-        foreach (var value in request.Query.Values)
+        foreach (var parameter in request.Query)
         {
-            try { CatalogDefinitions.Text(value.ToString(), 65536); }
+            try { CatalogDefinitions.Text(parameter.Value.ToString(), 65536); }
             catch (CatalogFault) { throw FilterError(); }
         }
         int Number(string key, int fallback, int min, int max) => !request.Query.ContainsKey(key) ? fallback :

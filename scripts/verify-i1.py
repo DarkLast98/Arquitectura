@@ -7,6 +7,8 @@ Private logs and sessions remain under .local/i1. No TLS verification bypass.
 from pathlib import Path
 import json, os, signal, socket, ssl, subprocess, sys, time, urllib.request, urllib.error, uuid
 import xml.etree.ElementTree as ET
+import tempfile, shutil
+from postgres_migrations import build_migration_sql
 
 ROOT = Path(__file__).resolve().parents[1]
 DEV = ROOT / ".local/i1"
@@ -288,19 +290,17 @@ try:
     versions_sql = "SELECT coalesce(json_agg(t ORDER BY version),'[]'::json)::text FROM (SELECT version,checksum FROM public.schema_migrations) t;"
     before = db_sql(versions_sql, owner=True)
     require(before.returncode == 0, "Cannot inspect migration ledger")
-    migration = ROOT / "src/Aip.Api/Infrastructure/Postgres/Migrations/001_identity.sql"
-    original = migration.read_bytes()
-    try:
-        migration.write_bytes(original + b"\n-- synthetic checksum fault\n")
-        attempt = subprocess.run(
-            [sys.executable, "scripts/prepare-i1.py"],
-            cwd=ROOT,
-            env=env,
-            capture_output=True,
+    migrations = ROOT / "src/Aip.Api/Infrastructure/Postgres/Migrations"
+    with tempfile.TemporaryDirectory(prefix="checksum-probe-", dir=DEV) as temporary:
+        probe = Path(temporary) / "migrations"
+        shutil.copytree(migrations, probe)
+        migration = probe / "001_identity.sql"
+        migration.write_bytes(
+            migration.read_bytes() + b"\n-- synthetic checksum fault\n"
         )
+        attempt = db_sql(build_migration_sql(probe), owner=True)
         require(
-            attempt.returncode != 0
-            and b"Migration checksum mismatch" in attempt.stderr,
+            attempt.returncode != 0 and "Migration checksum mismatch" in attempt.stderr,
             "Changed applied migration was not rejected",
         )
         after = db_sql(versions_sql, owner=True)
@@ -308,8 +308,6 @@ try:
             after.returncode == 0 and before.stdout == after.stdout,
             "Migration fault changed the ledger",
         )
-    finally:
-        migration.write_bytes(original)
     domain = (
         ET.parse(REPORTS / "domain.trx")
         .getroot()
