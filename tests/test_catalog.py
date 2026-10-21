@@ -2,7 +2,7 @@
 
 import concurrent.futures, http.cookiejar, json, os, subprocess, unittest, urllib.request, urllib.error, uuid, ssl
 from pathlib import Path
-from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = os.environ.get("AIP_TEST_URL", "https://localhost:7240")
@@ -69,7 +69,11 @@ class Client:
             headers["X-CSRF-TOKEN"] = self.csrf
         if etag is not None:
             headers["If-Match"] = str(etag) if isinstance(etag, str) else f'"{etag}"'
-        data = None if body is None else json.dumps(body).encode()
+        data = (
+            body
+            if isinstance(body, bytes)
+            else None if body is None else json.dumps(body).encode()
+        )
         if method == "POST" and data is None:
             data = b""
         request = urllib.request.Request(
@@ -130,6 +134,13 @@ def db_sql(sql, owner=False):
 class CatalogTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        checker = FormatChecker()
+        if "date-time" not in checker.checkers or checker.conforms(
+            "invalid-date-time", "date-time"
+        ):
+            raise RuntimeError(
+                "date-time validation is required; install pinned tests/requirements.txt"
+            )
         cls.architect = Client("architect")
         cls.admin = Client("admin")
         cls.reader = Client("reader")
@@ -413,6 +424,243 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(s, 200)
         self.assert_schema("Entity", row)
 
+    def test_12_audit_permission_follows_endpoint_metadata(self):
+        for client, expected in [
+            (self.reader, 403),
+            (self.architect, 403),
+            (self.admin, 200),
+        ]:
+            for path in ["/audit-events", "/audit-events/", "/AUDIT-EVENTS"]:
+                with self.subTest(path=path, expected=expected):
+                    self.assertEqual(client.api("GET", path)[0], expected)
+        context = f"BEGIN; SET LOCAL app.subject_id='{ACTOR}'; SET LOCAL app.organization_id='{A}'; SELECT count(*) FROM audit.catalog_events; ROLLBACK;"
+        result = db_sql(context)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("0", result.stdout.splitlines())
+        for method, path in [
+            ("POST", "/entities"),
+            ("POST", "/relationships"),
+            ("PATCH", "/entities/" + str(uuid.uuid4())),
+            ("POST", "/entities/" + str(uuid.uuid4()) + "/archive"),
+            ("POST", "/relationships/" + str(uuid.uuid4()) + "/archive"),
+        ]:
+            self.assertEqual(self.reader.api(method, path, {}, etag=1)[0], 403)
+
+    def test_13_unsupported_unicode_is_validation_and_rolls_back(self):
+        entity = self.entity()
+        for field in ["name", "description"]:
+            for value in ["before\x00after", "\ud800", "\udfff"]:
+                with self.subTest(field=field, representation=repr(value)):
+                    body = {
+                        "type_id": "core.application",
+                        "schema_version": "0.1.0",
+                        "code": "UNICODE-" + uuid.uuid4().hex[:12],
+                        "name": "Unicode test",
+                    } | {field: value}
+                    status, problem, _ = self.architect.api("POST", "/entities", body)
+                    self.assertEqual(status, 422, problem)
+                    self.assert_schema("Problem", problem)
+                    self.assertEqual(
+                        self.architect.api("GET", "/entities?code=" + body["code"])[1][
+                            "total"
+                        ],
+                        0,
+                    )
+                    self.assertEqual(
+                        self.architect.api(
+                            "PATCH", "/entities/" + entity["id"], {field: value}, etag=1
+                        )[0],
+                        422,
+                    )
+                    self.assertEqual(
+                        self.architect.api("GET", "/entities/" + entity["id"])[1],
+                        entity,
+                    )
+        for raw in [b'{"name":"a","name":"b"}', b"{", b'{"\\ud800":1}']:
+            self.assertEqual(
+                self.architect.api("PATCH", "/entities/" + entity["id"], raw, etag=1)[
+                    0
+                ],
+                400,
+            )
+        self.assertEqual(
+            self.architect.api("GET", "/entities?q=before%00after")[0], 400
+        )
+        with self.assertRaises(ValidationError):
+            self.assert_schema("Entity", entity | {"created_at": "not-a-date"})
+        cap = self.entity("core.business_capability")
+        self.assertEqual(
+            self.architect.api(
+                "POST",
+                "/relationships",
+                {
+                    "type_id": "core.supports",
+                    "schema_version": "0.1.0",
+                    "source_entity_id": entity["id"],
+                    "target_entity_id": cap["id"],
+                    "description": "bad\x00text",
+                },
+            )[0],
+            422,
+        )
+
+    def test_14_archived_uniqueness_and_cross_tenant_foreign_key(self):
+        entity = self.entity()
+        self.assertEqual(
+            self.architect.api(
+                "POST", "/entities/" + entity["id"] + "/archive", etag=1
+            )[0],
+            200,
+        )
+        body = {
+            "type_id": entity["type_id"],
+            "schema_version": "0.1.0",
+            "code": entity["code"],
+            "name": "Cannot reuse archived code",
+        }
+        self.assertEqual(self.architect.api("POST", "/entities", body)[0], 409)
+        self.assertEqual(
+            self.architect.api("GET", "/entities?code=" + entity["code"])[1]["total"], 0
+        )
+        self.assertEqual(
+            self.architect.api(
+                "GET", "/entities?status=archived&code=" + entity["code"]
+            )[1]["total"],
+            1,
+        )
+        self.assertEqual(
+            self.architect.api(
+                "POST", "/entities/" + entity["id"] + "/archive", etag=2
+            )[0],
+            409,
+        )
+        for method, path in [
+            ("DELETE", "/entities/" + entity["id"]),
+            ("POST", "/entities/" + entity["id"] + "/restore"),
+        ]:
+            self.assertIn(self.architect.api(method, path)[0], [404, 405])
+        app = self.entity()
+        cap = self.entity("core.business_capability")
+        _, first, _ = self.relation(app, cap)
+        self.assertEqual(
+            self.architect.api(
+                "POST", "/relationships/" + first["id"] + "/archive", etag=1
+            )[0],
+            200,
+        )
+        status, second, _ = self.relation(app, cap)
+        self.assertEqual(status, 201)
+        self.assertNotEqual(first["id"], second["id"])
+        foreign = self.entity("core.business_capability", org=B)
+        attack = f"BEGIN; SET LOCAL app.subject_id='{ACTOR}'; SET LOCAL app.organization_id='{A}'; INSERT INTO catalog.relationships(id,organization_id,type_id,schema_version,source_entity_id,target_entity_id,created_by,updated_by) VALUES(gen_random_uuid(),'{A}','core.supports','0.1.0','{app['id']}','{foreign['id']}','{ACTOR}','{ACTOR}'); COMMIT;"
+        result = db_sql(attack)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("foreign key constraint", result.stderr)
+
+    def test_15_audit_failure_rolls_back_update_and_archive(self):
+        entity = self.entity()
+        path = "/entities/" + entity["id"]
+        trigger = f"CREATE FUNCTION test_mutation_audit_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.resource_id='{entity['id']}'::uuid THEN RAISE EXCEPTION 'synthetic audit failure'; END IF; RETURN NEW; END $$; CREATE TRIGGER test_mutation_audit_failure BEFORE INSERT ON audit.catalog_events FOR EACH ROW EXECUTE FUNCTION test_mutation_audit_failure();"
+        self.assertEqual(db_sql(trigger, owner=True).returncode, 0)
+        try:
+            self.assertEqual(
+                self.architect.api("PATCH", path, {"name": "Must roll back"}, etag=1)[
+                    0
+                ],
+                500,
+            )
+            self.assertEqual(self.architect.api("GET", path)[1], entity)
+            self.assertEqual(
+                self.architect.api("POST", path + "/archive", etag=1)[0], 500
+            )
+            self.assertEqual(self.architect.api("GET", path)[1], entity)
+            self.assertEqual(
+                self.admin.api("GET", "/audit-events?resource_id=" + entity["id"])[1][
+                    "total"
+                ],
+                1,
+            )
+        finally:
+            cleanup = db_sql(
+                "DROP TRIGGER IF EXISTS test_mutation_audit_failure ON audit.catalog_events; DROP FUNCTION IF EXISTS test_mutation_audit_failure();",
+                owner=True,
+            )
+            self.assertEqual(cleanup.returncode, 0, cleanup.stderr)
+
+    def test_16_order_filters_and_paging_contract(self):
+        prefix = "PAGE-" + uuid.uuid4().hex[:10]
+        for index in reversed(range(6)):
+            self.entity(
+                code=prefix + str(index), name=prefix + " Element " + str(index)
+            )
+        first = self.architect.api("GET", "/entities?limit=2&q=" + prefix)[1]
+        second = self.architect.api("GET", "/entities?limit=2&offset=2&q=" + prefix)[1]
+        self.assertEqual(first["total"], 6)
+        self.assertEqual(second["total"], 6)
+        self.assertEqual(
+            [e["code"] for e in first["items"] + second["items"]],
+            [prefix.upper() + str(n) for n in range(4)],
+        )
+        for query in [
+            "?limit=101",
+            "?offset=10001",
+            "?offset=-1",
+            "?limit=2&limit=3",
+            "?status=unknown",
+            "?type_id=core.supports",
+            "?q=" + ("a" * 129),
+        ]:
+            self.assertEqual(self.architect.api("GET", "/entities" + query)[0], 400)
+        for path, schema in [
+            ("/entities?status=all", "EntityPage"),
+            ("/relationships?status=all", "RelationshipPage"),
+        ]:
+            status, page, _ = self.architect.api("GET", path)
+            self.assertEqual(status, 200)
+            self.assert_schema(schema, page)
+        status, page, _ = self.admin.api("GET", "/audit-events?limit=2&offset=1")
+        self.assertEqual(status, 200)
+        self.assert_schema("AuditEventPage", page)
+
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    import sys
+
+    class EvidenceResult(unittest.TextTestResult):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cases = []
+
+        def addSuccess(self, test):
+            super().addSuccess(test)
+            self.cases.append({"id": test.id(), "result": "PASS"})
+
+        def addFailure(self, test, err):
+            super().addFailure(test, err)
+            self.cases.append({"id": test.id(), "result": "FAIL"})
+
+        def addError(self, test, err):
+            super().addError(test, err)
+            self.cases.append({"id": test.id(), "result": "ERROR"})
+
+    result = unittest.TextTestRunner(verbosity=2, resultclass=EvidenceResult).run(
+        unittest.defaultTestLoader.loadTestsFromTestCase(CatalogTests)
+    )
+    if target := os.environ.get("AIP_TEST_REPORT"):
+        report = Path(target)
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(
+            json.dumps(
+                {
+                    "total": result.testsRun,
+                    "failures": len(result.failures),
+                    "errors": len(result.errors),
+                    "skipped": len(result.skipped),
+                    "cases": result.cases,
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+        report.chmod(0o600)
+    sys.exit(0 if result.wasSuccessful() else 1)

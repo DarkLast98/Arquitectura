@@ -48,6 +48,14 @@ for (const body of [
   },
 ])
   if (validate(body)) throw new Error("Entrada inválida aceptada");
+for (const invalid of ["bad\0text", "\ud800", "\udfff"]) {
+  if(validate({type_id:"core.application",schema_version:"0.1.0",code:"UNICODE",name:invalid})) throw new Error("Unsupported Unicode accepted in name");
+  if(validate({type_id:"core.application",schema_version:"0.1.0",code:"UNICODE",name:"Valid",description:invalid})) throw new Error("Unsupported Unicode accepted in description");
+}
+const served=await fetch("https://localhost:7240/contracts/openapi/catalog.v1.json");
+if(served.status!==200 || JSON.stringify(await served.json())!==JSON.stringify(spec)) throw new Error("Served OpenAPI differs from versioned contract");
+const servedSchema=await fetch("https://localhost:7240/contracts/schemas/catalog/0.1.0/catalog.schema.json");
+if(servedSchema.status!==200 || JSON.stringify(await servedSchema.json())!==JSON.stringify(schema)) throw new Error("Served JSON Schema differs from versioned contract");
 const response = await fetch(
   "https://localhost:7240/api/v1/organizations/00000000-0000-4000-8000-00000000000a/catalog/entities",
 );

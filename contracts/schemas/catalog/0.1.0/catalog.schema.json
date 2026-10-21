@@ -32,14 +32,20 @@
         "name": {
           "type": "string",
           "maxLength": 200,
+          "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$",
           "minLength": 1,
-          "pattern": "\\S"
+          "allOf": [
+            {
+              "pattern": "\\S"
+            }
+          ]
         },
         "description": {
           "anyOf": [
             {
               "type": "string",
-              "maxLength": 4000
+              "maxLength": 4000,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
             },
             {
               "type": "null"
@@ -122,7 +128,8 @@
           "anyOf": [
             {
               "type": "string",
-              "maxLength": 4000
+              "maxLength": 4000,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
             },
             {
               "type": "null"
@@ -200,13 +207,19 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^\\s*\\S(?:[\\s\\S]{0,198}\\S)?\\s*$"
+          "pattern": "^\\s*\\S(?:[\\s\\S]{0,198}\\S)?\\s*$",
+          "allOf": [
+            {
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
+            }
+          ]
         },
         "description": {
           "anyOf": [
             {
               "type": "string",
-              "maxLength": 4000
+              "maxLength": 4000,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
             },
             {
               "type": "null"
@@ -234,13 +247,19 @@
       "properties": {
         "name": {
           "type": "string",
-          "pattern": "^\\s*\\S(?:[\\s\\S]{0,198}\\S)?\\s*$"
+          "pattern": "^\\s*\\S(?:[\\s\\S]{0,198}\\S)?\\s*$",
+          "allOf": [
+            {
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
+            }
+          ]
         },
         "description": {
           "anyOf": [
             {
               "type": "string",
-              "maxLength": 4000
+              "maxLength": 4000,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
             },
             {
               "type": "null"
@@ -283,7 +302,8 @@
           "anyOf": [
             {
               "type": "string",
-              "maxLength": 4000
+              "maxLength": 4000,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
             },
             {
               "type": "null"

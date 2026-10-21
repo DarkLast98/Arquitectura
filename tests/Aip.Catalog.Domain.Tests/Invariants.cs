@@ -43,4 +43,13 @@ public class Invariants
         Assert.Throws<CatalogFault>(() => Entity("future.service"));
         Assert.Throws<CatalogFault>(() => ArchitectureEntity.Create(Guid.NewGuid(), Org, "core.application", "0.2.0", "CODE", "Name", null, "internal"));
     }
+    [Fact]
+    public void UnsupportedTextIsRejectedBeforePersistence()
+    {
+        foreach (var invalid in new[] { "NUL\0text", "\ud800", "\udfff" })
+        {
+            Assert.Throws<CatalogFault>(() => Entity(name: invalid));
+            Assert.Throws<CatalogFault>(() => Entity().Edit("Valid", invalid, "internal", 1));
+        }
+    }
 }

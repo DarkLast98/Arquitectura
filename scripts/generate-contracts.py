@@ -6,7 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1] / "contracts"
 uuid = {"type": "string", "format": "uuid"}
-text = lambda n: {"type": "string", "maxLength": n}
+unicode_text = r"^[^\u0000\uD800-\uDFFF]*$"
+text = lambda n: {"type": "string", "maxLength": n, "pattern": unicode_text}
 nullable = lambda s: {"anyOf": [s, {"type": "null"}]}
 entity_types = ["core.business_capability", "core.application", "core.data_asset"]
 relation_types = ["core.supports", "core.uses"]
@@ -25,7 +26,7 @@ def ref(name):
     return {"$ref": "#/$defs/" + name}
 
 
-name = text(200) | {"minLength": 1, "pattern": r"\S"}
+name = text(200) | {"minLength": 1, "allOf": [{"pattern": r"\S"}]}
 classification = {"enum": ["internal", "confidential", "restricted"]}
 base = {
     "id": uuid,
@@ -58,7 +59,11 @@ create["code"] = {
     "type": "string",
     "pattern": r"^\s*[A-Za-z0-9][A-Za-z0-9._-]{0,63}\s*$",
 }
-input_name = {"type": "string", "pattern": r"^\s*\S(?:[\s\S]{0,198}\S)?\s*$"}
+input_name = {
+    "type": "string",
+    "pattern": r"^\s*\S(?:[\s\S]{0,198}\S)?\s*$",
+    "allOf": [{"pattern": unicode_text}],
+}
 create["name"] = input_name
 relation = {
     k: v for k, v in base.items() if k not in ["code", "name", "classification"]

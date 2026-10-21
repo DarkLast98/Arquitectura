@@ -1,4 +1,5 @@
 using System.Text;
+using System.Buffers;
 using System.Text.RegularExpressions;
 
 namespace Aip.Modules.Catalog.Domain;
@@ -25,8 +26,15 @@ public static class CatalogDefinitions
     public static string Text(string text, int max, bool trim = false)
     {
         if (trim) text = text.Trim();
-        if (text.EnumerateRunes().Count() > max || (trim && string.IsNullOrWhiteSpace(text))) throw Invalid("Texto inválido");
-        return trim ? text.Trim() : text;
+        var length = 0;
+        for (var offset = 0; offset < text.Length;)
+        {
+            if (Rune.DecodeFromUtf16(text.AsSpan(offset), out var rune, out var consumed) != OperationStatus.Done || rune.Value == 0)
+                throw Invalid("Texto Unicode inválido o no representable");
+            offset += consumed; length++;
+        }
+        if (length > max || (trim && string.IsNullOrWhiteSpace(text))) throw Invalid("Texto inválido");
+        return text;
     }
     public static CatalogFault Invalid(string message) => new(CatalogFailure.Validation, "CAT_VALIDATION", message);
 }

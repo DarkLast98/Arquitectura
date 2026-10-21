@@ -1,3 +1,4 @@
+using Aip.Modules.Catalog.Domain;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -31,7 +32,7 @@ public static partial class Rules
             if (fields.Distinct().Count() != fields.Length) throw new ApiProblem(400, "CAT_INVALID_JSON", "Campos JSON repetidos");
             node = JsonNode.Parse(doc.RootElement.GetRawText());
         }
-        catch (JsonException) { throw new ApiProblem(400, "CAT_INVALID_JSON", "JSON malformado"); }
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException) { throw new ApiProblem(400, "CAT_INVALID_JSON", "JSON malformado"); }
         var body = node!.AsObject();
         if (body.Any(x => !allowed.Contains(x.Key))) throw Invalid("Campo desconocido o reservado");
         return body;
@@ -44,10 +45,15 @@ public static partial class Rules
             if (required) throw Invalid($"El campo {key} es obligatorio");
             return "";
         }
-        if (node is not JsonValue value || !value.TryGetValue<string>(out var text)) throw Invalid($"El campo {key} debe ser texto");
-        if (trim) text = text.Trim();
-        var length = text.EnumerateRunes().Count();
-        if (length > max || (required && text.Length == 0)) throw Invalid($"Longitud inválida para {key}");
+        string text;
+        try
+        {
+            if (node is not JsonValue value || !value.TryGetValue<string>(out var parsed)) throw Invalid($"El campo {key} debe ser texto");
+            text = parsed;
+        }
+        catch (InvalidOperationException) { throw Invalid($"Texto Unicode inválido para {key}"); }
+        text = CatalogDefinitions.Text(text, max, trim);
+        if (required && text.Length == 0) throw Invalid($"Longitud inválida para {key}");
         return text;
     }
     public static string? Description(JsonObject body) => !body.ContainsKey("description") || body["description"] is null ? null : Text(body, "description", 4000, false);

@@ -26,8 +26,11 @@
     "@angular/compiler-cli": "22.2.3",
     "typescript": "~6.0.0",
     "@playwright/test": "1.60.0",
-    "ajv": "8.17.1",
+    "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "@apidevtools/swagger-parser": "12.1.0"
+  },
+  "overrides": {
+    "vite": "8.3.3"
   }
 }

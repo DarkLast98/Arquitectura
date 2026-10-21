@@ -58,7 +58,7 @@ catalog.AddEndpointFilter(async (context, next) =>
     var role = await db.Scalar("SELECT role FROM identity.memberships WHERE organization_id=@org AND subject_id=@actor", ("org", organization), ("actor", actor)) as string;
     if (role is null) throw new ApiProblem(403, "AUTH_MEMBERSHIP", "Sin membresía en la organización");
     if (http.Request.Method != "GET" && role == "reader") throw new ApiProblem(403, "AUTH_ROLE", "El rol solo permite lectura");
-    if (http.Request.Path.Value!.EndsWith("/audit-events") && role != "organization_admin") throw new ApiProblem(403, "AUTH_ROLE", "Solo el administrador organizacional consulta auditoría");
+    if (http.GetEndpoint()?.Metadata.GetMetadata<OrganizationAdminOnly>() is not null && role != "organization_admin") throw new ApiProblem(403, "AUTH_ROLE", "Solo el administrador organizacional consulta auditoría");
     db.OrganizationId = organization; db.Role = role;
     await db.Execute("SELECT set_config('app.organization_id',@org,true)", ("org", organization.ToString()));
     if (http.Request.Method != "GET") await http.RequestServices.GetRequiredService<IAntiforgery>().ValidateRequestAsync(http);
@@ -70,7 +70,8 @@ catalog.MapGet("/types", () => Results.Ok(CatalogService.Types()));
 foreach (var kind in new[] { "entities", "relationships", "audit-events" })
 {
     var current = kind;
-    catalog.MapGet("/" + current, async (HttpRequest req, CatalogService service) => Results.Ok(await service.List(req, current)));
+    var endpoint = catalog.MapGet("/" + current, async (HttpRequest req, CatalogService service) => Results.Ok(await service.List(req, current)));
+    if (current == "audit-events") endpoint.WithMetadata(new OrganizationAdminOnly());
 }
 foreach (var relationship in new[] { false, true })
 {

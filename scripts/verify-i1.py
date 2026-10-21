@@ -6,6 +6,7 @@ Private logs and sessions remain under .local/i1. No TLS verification bypass.
 
 from pathlib import Path
 import json, os, signal, socket, ssl, subprocess, sys, time, urllib.request, urllib.error, uuid
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 DEV = ROOT / ".local/i1"
@@ -20,6 +21,40 @@ env = os.environ | {
 }
 processes = []
 handles = []
+DEV.mkdir(parents=True, mode=0o700, exist_ok=True)
+REPORTS = DEV / "test-results"
+REPORTS.mkdir(mode=0o700, exist_ok=True)
+summary = {
+    "result": "RUNNING",
+    "started_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+}
+
+
+def save_summary():
+    target = DEV / "verification.json"
+    target.write_text(json.dumps(summary, indent=2) + "\n")
+    target.chmod(0o600)
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def browser_report(name):
+    report = json.loads((REPORTS / name).read_text())
+    stats = report["stats"]
+    require(
+        stats["expected"] > 0
+        and stats["unexpected"] == 0
+        and stats["flaky"] == 0
+        and stats["skipped"] == 0,
+        "Browser suite must pass without skipped or flaky tests",
+    )
+    return stats["expected"]
+
+
+save_summary()
 
 
 def run(args, cwd=ROOT):
@@ -113,17 +148,39 @@ try:
     run([sys.executable, "scripts/prepare-i1.py"])
     for port in [7240, 7241, 7242, 7243, 7443, 7444]:
         port_free(port)
+    contracts = list((ROOT / "contracts").rglob("*.json"))
+    original_contracts = {str(p.relative_to(ROOT)): p.read_bytes() for p in contracts}
+    run([sys.executable, "scripts/generate-contracts.py"])
+    require(
+        all(
+            (ROOT / name).read_bytes() == contents
+            for name, contents in original_contracts.items()
+        ),
+        "Generated contracts drift from versioned files",
+    )
     run([DOTNET, "restore", "src/Aip.Api", "--locked-mode"])
     run([DOTNET, "build", "src/Aip.Api", "--no-restore"])
     run([DOTNET, "restore", "tests/Aip.Catalog.Domain.Tests", "--locked-mode"])
-    run([DOTNET, "test", "tests/Aip.Catalog.Domain.Tests", "--no-restore"])
+    run(
+        [
+            DOTNET,
+            "test",
+            "tests/Aip.Catalog.Domain.Tests",
+            "--no-restore",
+            "--logger",
+            "trx;LogFileName=domain.trx",
+            "--results-directory",
+            str(REPORTS),
+        ]
+    )
     run(["npm", "run", "build"], ROOT / "web")
     try:
-        assert (
+        require(
             request(
                 "https://localhost:8443/realms/aip/.well-known/openid-configuration"
             )[0]
-            == 200
+            == 200,
+            "OIDC discovery failed",
         )
     except (OSError, urllib.error.URLError):
         kc = start([sys.executable, "scripts/run-keycloak.py"], "keycloak-tests")
@@ -133,34 +190,38 @@ try:
     main = api("appsettings.json", 7240, "api-main")
     api("appsettings-alt.json", 7241, "api-alternate")
     api("appsettings-test.json", 7242, "api-negative")
-    run(["npx", "playwright", "test", "--project", "setup"], ROOT / "web")
+    env["PLAYWRIGHT_JSON_OUTPUT_NAME"] = str(REPORTS / "browser-setup.json")
+    run(
+        ["npx", "playwright", "test", "--project", "setup", "--reporter=list,json"],
+        ROOT / "web",
+    )
+    env["AIP_TEST_REPORT"] = str(REPORTS / "api.json")
+    run([sys.executable, "tests/test_catalog.py"])
+    run(["npm", "run", "test:contracts"], ROOT / "web")
+    env["PLAYWRIGHT_JSON_OUTPUT_NAME"] = str(REPORTS / "browser-catalog.json")
     run(
         [
-            sys.executable,
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "tests",
-            "-p",
-            "test_catalog.py",
-            "-v",
-        ]
-    )
-    run(["npm", "run", "test:contracts"], ROOT / "web")
-    run(
-        ["npx", "playwright", "test", "--project", "catalog", "--no-deps"], ROOT / "web"
+            "npx",
+            "playwright",
+            "test",
+            "--project",
+            "catalog",
+            "--no-deps",
+            "--reporter=list,json",
+        ],
+        ROOT / "web",
     )
     sys.path.insert(0, str(ROOT / "tests"))
     from test_catalog import Client, A, db_sql
 
-    assert (
+    require(
         db_sql(
             "SELECT count(*) FROM identity.subjects WHERE issuer='https://localhost:7443' AND external_subject LIKE 'untrusted-%';",
             owner=True,
         ).stdout.strip()
-        == "0"
-    ), "Invalid OIDC response provisioned an identity"
+        == "0",
+        "Invalid OIDC response provisioned an identity",
+    )
     client = Client("architect")
     code = "RESTART-" + uuid.uuid4().hex[:12].upper()
     status, row, _ = client.api(
@@ -173,11 +234,11 @@ try:
             "name": "Persistencia sintética",
         },
     )
-    assert status == 201
+    require(status == 201, "Restart fixture creation failed")
     stop(main)
     main = api("appsettings.json", 7240, "api-restarted")
     status, recovered, _ = client.api("GET", "/entities/" + row["id"])
-    assert status == 200 and recovered == row
+    require(status == 200 and recovered == row, "Persistence after API restart failed")
     print(
         "AC-13: datos, revisión y acceso conservados tras reiniciar el proceso API.",
         flush=True,
@@ -198,7 +259,7 @@ try:
         "api-invalid",
         {"AIP_CONFIG": str(bad)},
     )
-    assert p.wait(timeout=15) != 0
+    require(p.wait(timeout=15) != 0, "Invalid OIDC configuration must fail at startup")
     config["Authentication"]["Oidc"].update(
         Authority="https://localhost:7444", ClientSecret="unused-test-only"
     )
@@ -206,15 +267,16 @@ try:
     bad.write_text(json.dumps(config))
     down = api("appsettings-invalid.json", 7243, "api-idp-down")
     status, body, headers = request("https://localhost:7243/auth/login")
-    assert (
+    require(
         status == 500
         and b"INTERNAL_ERROR" in body
-        and not headers.get("Set-Cookie", "").startswith("__Host-aip.session=")
+        and not headers.get("Set-Cookie", "").startswith("__Host-aip.session="),
+        "Unavailable OIDC provider did not fail closed",
     )
     status, _, _ = request(
         "https://localhost:7243/api/v1/organizations/" + A + "/catalog/entities"
     )
-    assert status == 401
+    require(status == 401, "Anonymous catalog access must remain denied")
     print(
         "OIDC-04: configuración inválida y proveedor inaccesible fallan cerrados.",
         flush=True,
@@ -222,19 +284,74 @@ try:
     run(
         [sys.executable, "scripts/prepare-i1.py"]
     )  # checksums and existing data survive replay
-    summary = {
-        "result": "PASS",
-        "domain_tests": 5,
-        "api_database_tests": 11,
-        "browser_tests": 19,
-        "contracts": "OpenAPI 3.1 + JSON Schema 2020-12",
-        "restart": "PASS",
-        "fail_closed": "PASS",
-        "migrations_replay": "PASS",
-        "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-    }
-    (DEV / "verification.json").write_text(json.dumps(summary, indent=2) + "\n")
+    # Every migration check uses the real owner connection on the disposable local database.
+    versions_sql = "SELECT coalesce(json_agg(t ORDER BY version),'[]'::json)::text FROM (SELECT version,checksum FROM public.schema_migrations) t;"
+    before = db_sql(versions_sql, owner=True)
+    require(before.returncode == 0, "Cannot inspect migration ledger")
+    migration = ROOT / "src/Aip.Api/Infrastructure/Postgres/Migrations/001_identity.sql"
+    original = migration.read_bytes()
+    try:
+        migration.write_bytes(original + b"\n-- synthetic checksum fault\n")
+        attempt = subprocess.run(
+            [sys.executable, "scripts/prepare-i1.py"],
+            cwd=ROOT,
+            env=env,
+            capture_output=True,
+        )
+        require(
+            attempt.returncode != 0
+            and b"Migration checksum mismatch" in attempt.stderr,
+            "Changed applied migration was not rejected",
+        )
+        after = db_sql(versions_sql, owner=True)
+        require(
+            after.returncode == 0 and before.stdout == after.stdout,
+            "Migration fault changed the ledger",
+        )
+    finally:
+        migration.write_bytes(original)
+    domain = (
+        ET.parse(REPORTS / "domain.trx")
+        .getroot()
+        .find(".//{http://microsoft.com/schemas/VisualStudio/TeamTest/2010}Counters")
+    )
+    require(
+        domain is not None
+        and int(domain.attrib["failed"]) == 0
+        and int(domain.attrib["passed"]) == int(domain.attrib["total"]),
+        "Domain suite must fully pass",
+    )
+    api_result = json.loads((REPORTS / "api.json").read_text())
+    require(
+        api_result["total"] > 0
+        and api_result["failures"] == 0
+        and api_result["errors"] == 0
+        and api_result["skipped"] == 0,
+        "API suite must fully pass",
+    )
+    summary.update(
+        {
+            "result": "PASS",
+            "domain_tests": int(domain.attrib["total"]),
+            "api_database_tests": api_result["total"],
+            "api_cases": api_result["cases"],
+            "browser_tests": browser_report("browser-setup.json")
+            + browser_report("browser-catalog.json"),
+            "contracts": "OpenAPI 3.1 + JSON Schema 2020-12",
+            "restart": "PASS",
+            "fail_closed": "PASS",
+            "migrations_replay": "PASS",
+            "migration_checksum_rejection": "PASS",
+            "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+    )
+    save_summary()
     print(json.dumps(summary), flush=True)
+except BaseException as failure:
+    summary.update(result="FAIL", failure_kind=type(failure).__name__)
+    save_summary()
+    raise
+
 finally:
     for p in reversed(processes):
         stop(p)

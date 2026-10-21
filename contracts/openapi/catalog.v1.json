@@ -210,7 +210,8 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "maxLength": 64
+              "maxLength": 64,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
             }
           },
           {
@@ -218,7 +219,8 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "maxLength": 128
+              "maxLength": 128,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
             }
           }
         ],
