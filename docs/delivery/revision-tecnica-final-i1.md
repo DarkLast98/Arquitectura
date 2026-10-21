@@ -1,6 +1,6 @@
 # Dictamen técnico final — PR #1 / I1
 
-> **Alcance histórico:** este informe acredita el commit indicado. La refactorización Clean/hexagonal posterior se autoriza mediante ADR-0015 y exige una nueva [validación específica](refactor-clean-hexagonal-i1.md) antes de considerar listo el código actual.
+> **Alcance histórico:** este informe acredita el commit indicado. El dictamen vigente sobre el código refactorizado, autorizado por ADR-0015, está en [la validación Clean/hexagonal](refactor-clean-hexagonal-i1.md): 67 pruebas correctas sobre `1d5eeb7`.
 
 **Fecha:** 2026-10-21, America/Bogota. **Dictamen:** **LISTO PARA INTEGRAR I1**, desde la validación técnica ejecutada. No quedan defectos bloqueantes identificados dentro de I1. La fusión sigue condicionada a una decisión humana; no se ha ejecutado ni habilitado una fusión automática. No autoriza producción ni I2.
 

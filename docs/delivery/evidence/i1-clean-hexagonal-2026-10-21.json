@@ -1,0 +1,467 @@
+{
+  "review": "I1 Clean Architecture / hexagonal, ADR-0015",
+  "result": "PASS",
+  "source_commit": "1d5eeb7acb7458629ee6f8be1bfca133259767b0",
+  "source_archive_sha256": "2871e93112e4800d96204ccf235f672f9cfa38b7b2af5fbd1c862b8c562a2250",
+  "implementation_tree_sha256": "3913239f9a37a6aaedc15809f31cabcbd25531814c119478dc2434b7bf65600e",
+  "implementation_paths": [
+    "src",
+    "tests",
+    "web",
+    "scripts",
+    "contracts",
+    "Aip.slnx",
+    "Directory.Build.props",
+    "global.json",
+    ".nvmrc"
+  ],
+  "base_main": "25c4fccdec6304f34b3e068a93740bfbb830f20b",
+  "utc": "2026-10-21T23:47:27Z",
+  "America/Bogota": "2026-10-21T18:47:27-05:00",
+  "fresh": {
+    ".local": true,
+    "web/node_modules": true,
+    "web/dist": true,
+    "src/Aip.Api/bin": true,
+    "src/Aip.Api/obj": true
+  },
+  "initial_database": {
+    "entities": 0,
+    "relationships": 0,
+    "audit": 0,
+    "migrations": 6
+  },
+  "verification": {
+    "result": "PASS",
+    "started_utc": "2026-10-21T23:46:26Z",
+    "domain_tests": 6,
+    "application_tests": 21,
+    "web_unit_tests": 5,
+    "architecture_boundaries": "PASS",
+    "typescript_without_dom_angular": "PASS",
+    "api_database_tests": 16,
+    "api_cases": [
+      {
+        "id": "__main__.CatalogTests.test_01_entities_normalization_and_contract",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_02_uniqueness_is_scoped",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_03_relationship_rules",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_04_cross_organization_no_disclosure",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_05_auth_permissions_csrf",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_06_etag_concurrency",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_07_archival_and_history",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_08_archive_create_races",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_09_audit_failure_rolls_back",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_10_database_role_rls_and_context_reset",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_11_paging_filters_and_errors",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_12_audit_permission_follows_endpoint_metadata",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_13_unsupported_unicode_is_validation_and_rolls_back",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_14_archived_uniqueness_and_cross_tenant_foreign_key",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_15_audit_failure_rolls_back_update_and_archive",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_16_order_filters_and_paging_contract",
+        "result": "PASS"
+      }
+    ],
+    "browser_tests": 19,
+    "contracts": "OpenAPI 3.1 + JSON Schema 2020-12",
+    "restart": "PASS",
+    "fail_closed": "PASS",
+    "migrations_replay": "PASS",
+    "migration_checksum_rejection": "PASS",
+    "utc": "2026-10-21T23:47:27Z"
+  },
+  "total_tests": 67,
+  "domain_cases": [
+    {
+      "id": "Aip.Catalog.Domain.Tests.Invariants.IdentityAndCodeSurviveEdits",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Catalog.Domain.Tests.Invariants.RelationsRespectDirectionAndTenant(type: \"core.uses\", targetType: \"core.data_asset\")",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Catalog.Domain.Tests.Invariants.UnicodeLimitsCountCharactersAndRejectFutureMetamodel",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Catalog.Domain.Tests.Invariants.ArchiveAndRevisionGuardHistory",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Catalog.Domain.Tests.Invariants.UnsupportedTextIsRejectedBeforePersistence",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Catalog.Domain.Tests.Invariants.RelationsRespectDirectionAndTenant(type: \"core.supports\", targetType: \"core.business_capability\")",
+      "result": "PASS"
+    }
+  ],
+  "application_cases": [
+    {
+      "id": "Aip.Application.Tests.UseCases.ForeignOrganizationEndpointIsRejectedEvenIfAdapterReturnsIt",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.InvalidCommandNeverReachesPersistence",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.OrganizationPolicyAuthorizesBeforeSelectingContext(role: \"reader\", write: False, adminOnly: False, allowed: True)",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.AuditFailurePropagatesWithoutCommitting",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.MissingResourceDoesNotLeakRevisionOrState",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.PartialEditDistinguishesAbsentDescriptionFromExplicitNull",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.OrganizationPolicyAuthorizesBeforeSelectingContext(role: \"architect\", write: False, adminOnly: True, allowed: False)",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.OrganizationPolicyAuthorizesBeforeSelectingContext(role: \"architect\", write: True, adminOnly: False, allowed: True)",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.ActiveRelationshipsPreventArchive",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.RelationshipLocksEndpointsInDeterministicOrderBeforeInsert",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.OrganizationPolicyAuthorizesBeforeSelectingContext(role: \"reader\", write: True, adminOnly: False, allowed: False)",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.OrganizationPolicyAuthorizesBeforeSelectingContext(role: \"unrecognized\", write: True, adminOnly: False, allowed: False)",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.OrganizationPolicyAuthorizesBeforeSelectingContext(role: \"unrecognized\", write: False, adminOnly: False, allowed: False)",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.OrganizationPolicyAuthorizesBeforeSelectingContext(role: null, write: False, adminOnly: False, allowed: False)",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.QueryPortRetainsLiteralSearchAndRejectsAmbiguousFilters",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.InnerAssembliesCannotDependOnFrameworksOrAdapters",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.OrganizationPolicyAuthorizesBeforeSelectingContext(role: \"organization_admin\", write: True, adminOnly: True, allowed: True)",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.CreateUsesAuthorizedOrganizationAndAuditsNormalizedAggregate",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.StaleRevisionCannotWriteOrAudit",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.ForeignResourceCannotBeReturnedOrEditedByApplication",
+      "result": "PASS"
+    },
+    {
+      "id": "Aip.Application.Tests.UseCases.RevokedSubjectCannotEnumerateOrganizationsOrCommit",
+      "result": "PASS"
+    }
+  ],
+  "web_unit_cases": [
+    {
+      "id": "Editar conserva identidad/revisión y envía solo campos mutables",
+      "result": "PASS"
+    },
+    {
+      "id": "Crear fija el esquema I1 y conserva la organización explícita",
+      "result": "PASS"
+    },
+    {
+      "id": "Selección de extremos respeta dirección y tipos de SPEC-CAT-001",
+      "result": "PASS"
+    },
+    {
+      "id": "Adaptador mantiene CSRF privado y envía If-Match y cookie del mismo origen",
+      "result": "PASS"
+    },
+    {
+      "id": "Adaptador conserva conflicto 412 para revisión humana de cambios",
+      "result": "PASS"
+    }
+  ],
+  "browser_cases": [
+    {
+      "id": "OIDC real: cuatro perfiles, PKCE S256 y cookies seguras",
+      "project": "setup",
+      "result": "PASS"
+    },
+    {
+      "id": "AC-01,03,04,07,12: recorrido completo, archivo, texto seguro y separación",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "AC-05: lector consulta sin escribir y sin auditoría",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "AC-06,12: conflicto preserva formulario y requiere reconciliación",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-03: segundo Authority y ClientId con el mismo email no hereda membresías",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-05: revocar membresía afecta inmediatamente una sesión existente",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-01,06: login, CSRF, cierre OIDC y API sin redirección HTML",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02: rechaza state sin sesión",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02: rechaza signature sin sesión",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02: rechaza issuer sin sesión",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02: rechaza audience sin sesión",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02: rechaza expired sin sesión",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02: rechaza future sin sesión",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02: rechaza nonce sin sesión",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02: rechaza missing-nonce sin sesión",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-03: mismo sub de otro issuer no se asocia al administrador existente",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-07: rotación real de clave Keycloak y recuperación JWKS",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-02,06: retorno externo y cabeceras de suplantación no conceden acceso",
+      "project": "catalog",
+      "result": "PASS"
+    },
+    {
+      "id": "OIDC-05: sujeto revocado no recibe cookie de sesión",
+      "project": "catalog",
+      "result": "PASS"
+    }
+  ],
+  "contracts_spec_ontology_migrations": "PASS: unchanged bytes; no schema or contract migration",
+  "file_checksums": [
+    {
+      "path": "src/Aip.Infrastructure/Postgres/Migrations/001_identity.sql",
+      "sha256": "2e252438b5fc27c7b9b6caa4b6ccf9e4d11dea4140e202484caa50282aceb1c8",
+      "unchanged_from": "81f560f (original path)"
+    },
+    {
+      "path": "src/Aip.Infrastructure/Postgres/Migrations/002_types.sql",
+      "sha256": "f447ed573eb7f4ed16542a2dc1eefe33661f7fa45a2b1041653df3ac1c612eef",
+      "unchanged_from": "81f560f (original path)"
+    },
+    {
+      "path": "src/Aip.Infrastructure/Postgres/Migrations/003_entities.sql",
+      "sha256": "f1e11de200831917340cc4ec6828f29dc2855c928e63959128abddd6c9240ba4",
+      "unchanged_from": "81f560f (original path)"
+    },
+    {
+      "path": "src/Aip.Infrastructure/Postgres/Migrations/004_relationships.sql",
+      "sha256": "b27a07af428c800afc0c6ef0cf312ec324fd0cdbf19b1b5147d39de1854f63d0",
+      "unchanged_from": "81f560f (original path)"
+    },
+    {
+      "path": "src/Aip.Infrastructure/Postgres/Migrations/005_audit.sql",
+      "sha256": "a0b59ef3d0630f9dbcd4f1cbba5c8e4500a47b872e703291c4699eaf78e58427",
+      "unchanged_from": "81f560f (original path)"
+    },
+    {
+      "path": "src/Aip.Infrastructure/Postgres/Migrations/006_immutable_columns.sql",
+      "sha256": "da8db1f11ece06aed46d5a55f2c344b78b3217c813b87f08eebc56602ec68c67",
+      "unchanged_from": "81f560f (original path)"
+    },
+    {
+      "path": "contracts/openapi/catalog.v1.json",
+      "sha256": "0109eac8b4f8c74ba3fe2d2e51bb273e0e9758b14a1df43064fd191906b08246",
+      "unchanged_from": "81f560f"
+    },
+    {
+      "path": "contracts/schemas/catalog/0.1.0/catalog.schema.json",
+      "sha256": "ce2703b44f68526c47264ba67f1f1c48a7a0e8f3d5f23272392dcb98e129e722",
+      "unchanged_from": "81f560f"
+    },
+    {
+      "path": "docs/specs/catalogo-arquitectonico.md",
+      "sha256": "7f0887f810aa1edf4220aae63a4d83256581b0eaf6b84fb4a59f1b4e29c7cffe",
+      "unchanged_from": "main/25c4fcc"
+    },
+    {
+      "path": "docs/architecture/ontologia.md",
+      "sha256": "9038f8759f8e5c9261bcc57eb9c220db134c6e4c270975c392bbe5c6f40aeafe",
+      "unchanged_from": "main/25c4fcc"
+    }
+  ],
+  "dependencies": {
+    "npm_vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "nuget_api_advisories": 0,
+    "nuget_domain_tests_advisories": 0,
+    "nuget_application_tests_advisories": 0
+  },
+  "artifacts": [
+    {
+      "name": "api.json",
+      "sha256": "81eaa40e6a6bd41e007cdc0f4f35e2da5dbf3a9cd14bbbedea4f3d723b9e07cd"
+    },
+    {
+      "name": "application.trx",
+      "sha256": "79db58bffd2d5467494f4a4ae6c1029dab386c4b75dd95bbee220def7869ce39"
+    },
+    {
+      "name": "browser-catalog.json",
+      "sha256": "e1822adb1e6025556ddb053e69709bbebc73d3f0e5348b2cde22b45058634d7c"
+    },
+    {
+      "name": "browser-setup.json",
+      "sha256": "82ab335068529ffb5b46aaff0da96e048fa08c813e238ff26669349ff9096c99"
+    },
+    {
+      "name": "domain.trx",
+      "sha256": "e571dc2cfd3e8f9ab518af5e764117e29dbff95ffa7131b01e4c466c9cfd4134"
+    },
+    {
+      "name": "web-unit.xml",
+      "sha256": "dac26344f9a9281b1b3a198153438d150a080097e66738566bfc1bd47ea994c4"
+    }
+  ],
+  "execution_attempts": [
+    {
+      "source_commit": "dc35b496eade11ec3622a3c328be12eec00ab243",
+      "result": "PASS",
+      "tests": 67
+    },
+    {
+      "source_commit": "12a2a9dc060004edee7d223ea20a2b87ff3d3616",
+      "result": "FAIL",
+      "stage": "port preflight before build/tests",
+      "cause": "Closed local provider socket in TIME_WAIT; no active listener remained",
+      "resolution": "SO_REUSEADDR preflight, matching server socket configuration; active listener rejection checked"
+    },
+    {
+      "source_commit": "1d5eeb7acb7458629ee6f8be1bfca133259767b0",
+      "result": "PASS",
+      "tests": 67
+    }
+  ],
+  "scope": "I1 only; no merge, deployment, I2, agents or Neo4j",
+  "limits": [
+    "Local acceptance run; not a GitHub CI check",
+    "GitHub API Forbidden; no PR metadata/review update asserted",
+    "Production operation and JVM/IdP SBOM review remain deferred as previously documented"
+  ],
+  "private_artifact_root": "/tmp/aip-i1-review-uwj_wtqw"
+}

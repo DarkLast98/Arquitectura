@@ -1,6 +1,6 @@
 # Evidencia inicial de I1 — Trabajo B
 
-**Revisión de integración vigente:** [dictamen final del 2026-10-21](revision-tecnica-final-i1.md), 41 pruebas en una exportación limpia. Este documento conserva la ejecución histórica del 2026-10-20.
+**Revisión de integración vigente:** [dictamen Clean/hexagonal del 2026-10-21](refactor-clean-hexagonal-i1.md), 67 pruebas en una exportación limpia. Este documento conserva la ejecución histórica del 2026-10-20.
 
 **Alcance aprobado:** PLAN-I1-B v1.0 de `469f2dc`, PR #1; usuario «aprobado, implementa el PR». Autorización registrada antes de los commits de código en `6a187c1`. Solo I1; revisión humana y fusión pendientes.
 

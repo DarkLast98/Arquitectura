@@ -1,6 +1,6 @@
 # Estado de AIP
 
-**Fecha:** 2026-10-21 America/Bogota. **Fase:** refactorización de I1 a Clean Architecture/hexagonal autorizada, pendiente de nueva validación técnica del PR #1. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
+**Fecha:** 2026-10-21 America/Bogota. **Fase:** I1 refactorizado a Clean Architecture/hexagonal y validado técnicamente; revisión/fusión humanas pendientes del PR #1. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
 
 ## Evidencia y autorización
 
@@ -24,7 +24,7 @@ El commit `6a187c1` registra la autorización antes de los commits de implementa
 - Un host .NET modular sirve catálogo y Angular por HTTPS; OIDC oficial Code + PKCE/PAR, cookie segura y antiforgery. Sin contraseñas en AIP ni tokens OIDC en el navegador.
 - PostgreSQL transaccional con sujeto `(issuer,sub)`, membresías activas, RLS forzada, rol no propietario, permisos por columna, FKs organizacionales, revisión optimista y auditoría atómica.
 - Tres tipos de entidad y dos relaciones estables; altas, consultas, edición permitida, archivo lógico, filtros/páginas y errores uniformes.
-- Verificación completa: **6** pruebas de dominio, **16** API/base, **19** navegador; OpenAPI/JSON Schema, reinicio de API, migraciones repetibles y fallo seguro de configuración/IdP. [Dictamen final, matriz y evidencia](delivery/revision-tecnica-final-i1.md).
+- Verificación completa tras Clean/hexagonal: **67 pruebas** (6 dominio, 21 aplicación, 5 TypeScript, 16 API/base, 19 navegador), más dependencias entre capas, contratos, reinicio, migraciones y fallo seguro OIDC. [Dictamen vigente, matriz y evidencia](delivery/refactor-clean-hexagonal-i1.md).
 - [Ejecución local](delivery/ejecucion-local-i1.md) documentada. No se despliega infraestructura ni se fusiona el PR.
 
 ## Línea base y coordinación
@@ -50,8 +50,12 @@ Se reutilizó código compatible de catálogo/interfaz del prototipo local, sust
 
 ## Próxima acción
 
-Completar la validación limpia de la refactorización Clean/hexagonal y actualizar la evidencia del PR #1; cualquier fusión corresponde a una decisión humana. Después, definir I2 y comparar v0.2 cuando exista una fuente publicada, sin alterar contratos I1 ni comenzar ese desarrollo por esta autorización. [PLANS](../PLANS.md) mantiene el alcance recomendado.
+Revisar el [dictamen favorable de la refactorización Clean/hexagonal](delivery/refactor-clean-hexagonal-i1.md) y el head publicado del PR #1; cualquier fusión corresponde a una decisión humana. Después, definir I2 y comparar v0.2 cuando exista una fuente publicada, sin alterar contratos I1 ni comenzar ese desarrollo por esta autorización. [PLANS](../PLANS.md) mantiene el alcance recomendado.
 
-## Revisión final de integración
+## Revisión final anterior de integración
 
 Código evaluado `2a27cb8`, con dependencias reinstaladas, cachés vacías, PostgreSQL y Keycloak nuevos. 41 pruebas pasan, contratos y migraciones verificados; se corrigieron permisos de auditoría en variantes de URL, validación Unicode y avisos npm, y se activó validación `date-time` en Python. La [matriz final](delivery/revision-tecnica-final-i1.md) vincula AC-01–14, OIDC-01–07, ADR y resultados sanitizados. SPEC y ontología no cambian. El PR recibe los commits mediante Git; la API REST de GitHub está bloqueada por el proxy, por lo que no se afirma una actualización de su descripción ni una aprobación remota. No se fusiona ni despliega.
+
+## Validación vigente de Clean Architecture / hexagonal
+
+Commit `1d5eeb7acb7458629ee6f8be1bfca133259767b0`: 67 pruebas correctas en exportación limpia, datos/cachés nuevos y auditorías npm/NuGet sin avisos. Núcleos .NET/TypeScript independientes, puertos tipados y adaptadores explícitos; RLS, OIDC, concurrencia y auditoría conservados. SPEC, ontología, contratos y migraciones permanecen intactos. [Matriz AC/OIDC/HEX y evidencia](delivery/refactor-clean-hexagonal-i1.md). El intento transitorio de preflight TIME_WAIT y su corrección están registrados; no se omite como si hubiese pasado. La API GitHub permanece bloqueada, sin atribuir aprobación o checks remotos. Sin fusión, producción o I2.

@@ -6,7 +6,8 @@
 - Puertos tipados de catálogo, identidad, organización y auditoría; casos de uso independientes de HTTP, JSON y SQL.
 - Angular con modelos/casos de uso TypeScript, puerto y adaptador HTTP compuesto mediante inyección.
 - Solución para IDE, verificador rápido sin servicios, controles de dependencias y nuevas pruebas del núcleo/adaptadores.
-- Contratos, SPEC, ontología y seis migraciones conservados; nueva aceptación limpia en curso antes del dictamen.
+- Contratos, SPEC, ontología y seis migraciones conservados; 67 pruebas correctas en exportación limpia, con dictamen favorable y fusión humana pendiente.
+- Propiedad del pool PostgreSQL y preflight de puertos corregidos para apagar/repetir el entorno local correctamente; evidencia de intentos conservada.
 
 ## I1 — revisión técnica final para integración — 2026-10-21 America/Bogota
 

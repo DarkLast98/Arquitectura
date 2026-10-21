@@ -2,9 +2,9 @@
 
 Plataforma propia de gestión agéntica de arquitectura, desde la estrategia empresarial hasta la arquitectura de solución. Producto comercializable, inicialmente orientado al sector financiero, con un Core transversal y paquetes de conocimiento por industria y jurisdicción.
 
-**I1 en refactorización autorizada hacia Clean Architecture y arquitectura hexagonal, PR #1:** catálogo manual Angular → API .NET modular → PostgreSQL, con OIDC configurable, aislamiento por organización, revisión optimista y auditoría transaccional. La aprobación «aprobado, implementa el PR» cubre PLAN-I1-B v1.0; la fusión y los incrementos siguientes siguen pendientes.
+**I1 validado técnicamente con Clean Architecture y arquitectura hexagonal, PR #1; fusión humana pendiente:** catálogo manual Angular → API .NET modular → PostgreSQL, con OIDC configurable, aislamiento por organización, revisión optimista y auditoría transaccional. La aprobación «aprobado, implementa el PR» cubre PLAN-I1-B v1.0; la fusión y los incrementos siguientes siguen pendientes.
 
-La instrucción posterior del usuario sobre Clean Architecture/hexagonal se registra en [ADR-0015](docs/decisiones/0015-clean-architecture-hexagonal.md). La validación del código refactorizado se recoge en [su entrega](docs/delivery/refactor-clean-hexagonal-i1.md).
+La instrucción posterior del usuario sobre Clean Architecture/hexagonal se registra en [ADR-0015](docs/decisiones/0015-clean-architecture-hexagonal.md). La validación del código refactorizado —67 pruebas correctas en exportación limpia— se recoge en [su entrega](docs/delivery/refactor-clean-hexagonal-i1.md).
 
 El catálogo conserva tres tipos de entidad y dos relaciones de SPEC-CAT-001 v0.1.0. Keycloak 26.8.1 proporciona identidad local de desarrollo mediante Code + PKCE/PAR; AIP no recibe contraseñas. No hay agentes, Neo4j, extensiones del metamodelo ni despliegue cloud.
 
@@ -20,7 +20,7 @@ python3 scripts/trust-dev-ca.py
 python3 scripts/verify-i1.py
 ```
 
-El verificador comprueba las dependencias entre capas y compila/ejecuta dominio, casos de uso .NET/TypeScript, API/PostgreSQL, navegador, contratos, persistencia tras reinicio y fallos de OIDC. Usa únicamente datos sintéticos y certificados verificados. Secretos, sesiones y bases locales quedan fuera de Git. La [revisión anterior](docs/delivery/revision-tecnica-final-i1.md) conserva su matriz histórica; el [informe de refactorización](docs/delivery/refactor-clean-hexagonal-i1.md) registra la nueva validación antes de extender el dictamen al código actual. [Evidencia inicial de la entrega](docs/delivery/evidencia-i1-trabajo-b.md).
+El verificador comprueba las dependencias entre capas y compila/ejecuta dominio, casos de uso .NET/TypeScript, API/PostgreSQL, navegador, contratos, persistencia tras reinicio y fallos de OIDC. Usa únicamente datos sintéticos y certificados verificados. Secretos, sesiones y bases locales quedan fuera de Git. La [revisión anterior](docs/delivery/revision-tecnica-final-i1.md) conserva su matriz histórica; el [informe de refactorización](docs/delivery/refactor-clean-hexagonal-i1.md) acredita el código actual, los límites de capas y los criterios AC/OIDC. [Evidencia inicial de la entrega](docs/delivery/evidencia-i1-trabajo-b.md).
 
 Para repetir la revisión limpia de un commit, con el checkout sin cambios pendientes: `python3 scripts/verify-clean-i1.py`. Exporta HEAD, reinstala dependencias y crea datos PostgreSQL/Keycloak nuevos.
 
