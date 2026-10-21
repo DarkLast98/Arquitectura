@@ -33,8 +33,8 @@ python3 scripts/run-keycloak.py
 ```bash
 npm --prefix web run build
 # Restaurar/compilar con el SDK indicado por global.json:
-dotnet restore src/Aip.Api --locked-mode
-dotnet build src/Aip.Api --no-restore
+dotnet restore Aip.slnx --locked-mode
+dotnet build Aip.slnx --no-restore
 python3 scripts/run-api.py
 ```
 
@@ -60,7 +60,7 @@ El catálogo documenta sus rutas en [OpenAPI](../../contracts/openapi/catalog.v1
 
 La preparación crea la base local independiente `aip_i1` y el rol `aip_i1_app`, no propietario, sin superusuario ni BYPASSRLS. El propietario/migrador usa socket Unix en directorio privado; la aplicación usa TCP con SCRAM. No conectar esta preparación a una base productiva.
 
-Migraciones SQL 001–005 siguen el plan; 006 reduce UPDATE a columnas mutables. Se aplican dentro de una transacción con advisory lock y checksum SHA-256 por archivo. Una migración aplicada no se edita: crear la siguiente. La aplicación no puede modificar `schema_migrations` y no ejecuta migraciones al arrancar. Los fixtures de organizaciones/sujetos/membresías se ejecutan después, solo en la preparación local; repetirla no restaura membresías revocadas ni altera registros existentes.
+Las migraciones se encuentran en `src/Aip.Infrastructure/Postgres/Migrations/`, trasladadas sin cambiar sus checksums. Migraciones SQL 001–005 siguen el plan; 006 reduce UPDATE a columnas mutables. Se aplican dentro de una transacción con advisory lock y checksum SHA-256 por archivo. Una migración aplicada no se edita: crear la siguiente. La aplicación no puede modificar `schema_migrations` y no ejecuta migraciones al arrancar. Los fixtures de organizaciones/sujetos/membresías se ejecutan después, solo en la preparación local; repetirla no restaura membresías revocadas ni altera registros existentes.
 
 RLS forzada requiere contexto transaccional de sujeto y organización y membresía activa; el pool no conserva ese contexto después de commit/rollback. Unicidad de código incluye archivados, FKs de extremos incluyen organización, unicidad de relación activa es parcial y la auditoría se inserta en la misma transacción. Creación de relación bloquea extremos en orden UUID; archivo de entidad bloquea su fila antes de verificar relaciones activas. El contexto de RLS procede de la API autenticada: las credenciales de aplicación no se entregan al navegador.
 
@@ -73,3 +73,11 @@ Este entorno usa datos sintéticos y claves de protección de cookies en un dire
 Con el checkout sin cambios pendientes, los prerrequisitos instalados y libres 55432, 8443, 7240–7243, 7443/7444, ejecutar `python3 scripts/verify-clean-i1.py`. El wrapper exporta HEAD en un directorio temporal privado, crea un venv y cachés nuevos, copia Keycloak sin datos y prepara PostgreSQL/TLS/sesiones desde cero. Requiere permiso para confiar la CA en NSS; no omite TLS. Al terminar detiene PostgreSQL y los procesos de prueba creados, conserva los artefactos privados y anuncia la ruta de `clean-review.json` con el commit exacto.
 
 `verify-i1.py` escribe RUNNING/PASS/FAIL por ejecución y deriva conteos de reportes TRX/JSON, incluyendo la prueba de checksum alterado sobre copias privadas. El wrapper añade auditorías npm/NuGet y `pip check`; una auditoría fallida no produce dictamen PASS. El [dictamen de integración](revision-tecnica-final-i1.md) explica el alcance de las consultas adicionales de seguridad y contiene la evidencia sanitizada. AJV 8.20.0/Vite 8.3.3 corrigen los avisos detectados; el resto de versiones del producto permanece fijado como antes.
+
+## Ciclo de desarrollo Clean/hexagonal
+
+Abrir `Aip.slnx` en el IDE. Domain y Application son bibliotecas sin ASP.NET, Npgsql ni paquetes externos; Api compone los adaptadores de Infrastructure. El proceso y la configuración privada de ejecución no cambian. [Reglas y recorrido transaccional](../architecture/clean-hexagonal.md).
+
+Tras `npm --prefix web ci --cache /tmp/aip-npm-cache`, ejecutar `python3 scripts/verify-core-i1.py` para restauración bloqueada, comprobación de arquitectura, compilación de la solución, pruebas .NET y TypeScript y build Angular. No necesita PostgreSQL ni IdP. `npm --prefix web run test:core` compila el núcleo sin DOM/Angular. Los puertos solo se sustituyen por dobles en esas pruebas unitarias; la aceptación de seguridad/consistencia sigue requiriendo `verify-i1.py` o `verify-clean-i1.py` con los servicios reales.
+
+Los reportes de aplicación se guardan en `.local/i1/test-results/application.trx` y los de TypeScript en `web-unit.xml` bajo ese mismo directorio durante la aceptación. Las migraciones existentes no se editan al reorganizar proyectos. Nuevas dependencias hacia capas externas deben fallar en `scripts/check-architecture.py` y en las pruebas de referencias de ensamblados.

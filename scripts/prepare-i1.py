@@ -303,7 +303,7 @@ if owner_sql("SELECT 1 FROM pg_database WHERE datname='aip_i1'").strip() != "1":
 from postgres_migrations import build_migration_sql
 
 owner_sql(
-    build_migration_sql(ROOT / "src/Aip.Api/Infrastructure/Postgres/Migrations"),
+    build_migration_sql(ROOT / "src/Aip.Infrastructure/Postgres/Migrations"),
     "aip_i1",
 )
 # Deterministic identity mappings are fixtures, not auto-provisioning permissions at login.

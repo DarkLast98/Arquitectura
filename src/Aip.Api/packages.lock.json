@@ -11,12 +11,6 @@
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.19.2"
         }
       },
-      "Npgsql": {
-        "type": "Direct",
-        "requested": "[10.0.3, )",
-        "resolved": "10.0.3",
-        "contentHash": "7nb5YzXuvWWJxB0J8DiyL3we+X4FOctZrt0fIBnucOIaIevFEEwGQVZKtiu9olXdlNAK1eNgqSral6r/jlhI4w=="
-      },
       "Microsoft.Bcl.Cryptography": {
         "type": "Transitive",
         "resolved": "10.0.2",
@@ -69,6 +63,11 @@
           "Microsoft.IdentityModel.Logging": "8.19.2"
         }
       },
+      "Npgsql": {
+        "type": "Transitive",
+        "resolved": "10.0.3",
+        "contentHash": "7nb5YzXuvWWJxB0J8DiyL3we+X4FOctZrt0fIBnucOIaIevFEEwGQVZKtiu9olXdlNAK1eNgqSral6r/jlhI4w=="
+      },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Transitive",
         "resolved": "8.19.2",
@@ -78,8 +77,21 @@
           "Microsoft.IdentityModel.Tokens": "8.19.2"
         }
       },
-      "aip.catalog.domain": {
+      "aip.application": {
+        "type": "Project",
+        "dependencies": {
+          "Aip.Domain": "[1.0.0, )"
+        }
+      },
+      "aip.domain": {
         "type": "Project"
+      },
+      "aip.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Aip.Application": "[1.0.0, )",
+          "Npgsql": "[10.0.3, )"
+        }
       }
     }
   }

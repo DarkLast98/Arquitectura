@@ -9,7 +9,9 @@
     "start": "ng build --watch",
     "build": "ng build",
     "test:e2e": "playwright test",
-    "test:contracts": "node e2e/contracts.mjs"
+    "test:contracts": "node e2e/contracts.mjs",
+    "test:unit": "tsc -p tests/tsconfig.json && node --test --test-reporter=spec --test-reporter=junit --test-reporter-destination=stdout --test-reporter-destination=../.local/web-unit/results.xml tests/workspace.test.cjs",
+    "test:core": "tsc -p tsconfig.core.json"
   },
   "dependencies": {
     "@angular/common": "22.2.3",

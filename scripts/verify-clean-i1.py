@@ -160,6 +160,7 @@ try:
     for name, project in [
         ("api", "src/Aip.Api"),
         ("domain_tests", "tests/Aip.Catalog.Domain.Tests"),
+        ("application_tests", "tests/Aip.Application.Tests"),
     ]:
         audit = json.loads(
             capture(

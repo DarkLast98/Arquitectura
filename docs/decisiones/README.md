@@ -18,6 +18,8 @@ La aprobación del usuario «aprobado, implementa el PR» acepta las decisiones 
 | [ADR-0013](0013-oidc-desarrollo-configurable.md) | OIDC configurable con Code + PKCE y BFF. | Aceptado para I1 | Trabajo B; Keycloak 26.8.1 de desarrollo. |
 | [ADR-0014](0014-versiones-soportadas-i1.md) | Combinación estable y soportada del toolchain. | Aceptado para I1 | Trabajo B; manifests/lockfiles y validación real. |
 
+| [ADR-0015](0015-clean-architecture-hexagonal.md) | Clean Architecture y puertos/adaptadores. | Aceptado por petición explícita del usuario | Refactorización de I1, sin ampliar alcance. |
+
 El número 0012 está reservado por el registro local de identidad de `work/52c653d`, que no se importa a esta rama. Los ADR-0013/0014 se aprobaron junto a [PLAN-I1-B](../delivery/plan-implementacion-i1-trabajo-b.md); se conserva la propuesta original y se añade evidencia de aceptación.
 
 ## Evolución

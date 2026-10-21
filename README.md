@@ -2,7 +2,9 @@
 
 Plataforma propia de gestión agéntica de arquitectura, desde la estrategia empresarial hasta la arquitectura de solución. Producto comercializable, inicialmente orientado al sector financiero, con un Core transversal y paquetes de conocimiento por industria y jurisdicción.
 
-**I1 listo técnicamente para integrar mediante decisión humana, PR #1:** catálogo manual Angular → API .NET modular → PostgreSQL, con OIDC configurable, aislamiento por organización, revisión optimista y auditoría transaccional. La aprobación «aprobado, implementa el PR» cubre PLAN-I1-B v1.0; la fusión y los incrementos siguientes siguen pendientes.
+**I1 en refactorización autorizada hacia Clean Architecture y arquitectura hexagonal, PR #1:** catálogo manual Angular → API .NET modular → PostgreSQL, con OIDC configurable, aislamiento por organización, revisión optimista y auditoría transaccional. La aprobación «aprobado, implementa el PR» cubre PLAN-I1-B v1.0; la fusión y los incrementos siguientes siguen pendientes.
+
+La instrucción posterior del usuario sobre Clean Architecture/hexagonal se registra en [ADR-0015](docs/decisiones/0015-clean-architecture-hexagonal.md). La validación del código refactorizado se recoge en [su entrega](docs/delivery/refactor-clean-hexagonal-i1.md).
 
 El catálogo conserva tres tipos de entidad y dos relaciones de SPEC-CAT-001 v0.1.0. Keycloak 26.8.1 proporciona identidad local de desarrollo mediante Code + PKCE/PAR; AIP no recibe contraseñas. No hay agentes, Neo4j, extensiones del metamodelo ni despliegue cloud.
 
@@ -18,7 +20,7 @@ python3 scripts/trust-dev-ca.py
 python3 scripts/verify-i1.py
 ```
 
-El verificador compila y ejecuta dominio, API/PostgreSQL, navegador, contratos, persistencia tras reinicio y fallos de OIDC. Usa únicamente datos sintéticos y certificados verificados. Secretos, sesiones y bases locales quedan fuera de Git. [Dictamen final, matriz y riesgos](docs/delivery/revision-tecnica-final-i1.md): 41 pruebas pasan (6 dominio, 16 API/base, 19 navegador) en una exportación limpia. [Evidencia inicial de la entrega](docs/delivery/evidencia-i1-trabajo-b.md).
+El verificador comprueba las dependencias entre capas y compila/ejecuta dominio, casos de uso .NET/TypeScript, API/PostgreSQL, navegador, contratos, persistencia tras reinicio y fallos de OIDC. Usa únicamente datos sintéticos y certificados verificados. Secretos, sesiones y bases locales quedan fuera de Git. La [revisión anterior](docs/delivery/revision-tecnica-final-i1.md) conserva su matriz histórica; el [informe de refactorización](docs/delivery/refactor-clean-hexagonal-i1.md) registra la nueva validación antes de extender el dictamen al código actual. [Evidencia inicial de la entrega](docs/delivery/evidencia-i1-trabajo-b.md).
 
 Para repetir la revisión limpia de un commit, con el checkout sin cambios pendientes: `python3 scripts/verify-clean-i1.py`. Exporta HEAD, reinstala dependencias y crea datos PostgreSQL/Keycloak nuevos.
 
@@ -37,22 +39,34 @@ Para repetir la revisión limpia de un commit, con el checkout sin cambios pendi
 ## Estructura implementada
 
 ```text
+Aip.slnx                         # Solución única para desarrollo y compilación
+src/Aip.Domain/                  # Agregados e invariantes; solo BCL
+src/Aip.Application/             # Casos de uso, comandos/consultas y puertos
+  Catalog/                       # Catálogo tipado y coordinación de cambios
+  IdentityAccess/                # Identidad y autorización organizacional
+  Audit/                         # Contratos de auditoría
+src/Aip.Infrastructure/Postgres/ # Adaptadores y migraciones 001–006 intactas
 src/Aip.Api/
-  Program.cs                      # Composición, HTTP y transacción autorizada
-  Modules/IdentityAccess/          # OIDC, sujetos internos, sesión y membresías
-  Modules/Catalog/
-    Public/                       # Entrada HTTP y precondiciones
-    Domain/                       # Biblioteca BCL: agregados e invariantes
-    Application/                  # Casos de uso y puerto transaccional
-  Modules/Audit/Application/       # Escritura de eventos atómica
-  Infrastructure/Postgres/        # Adaptador Npgsql y migraciones 001–006
-web/src/app/                      # Catálogo Angular, relaciones y auditoría
-contracts/{openapi,schemas}/       # API v1 y esquema 0.1.0
-tests/                            # Dominio .NET, API/PostgreSQL Python, fallos OIDC
-web/e2e/                          # Playwright contra servicios reales
-scripts/                          # Preparación, ejecución y verificación locales
-docs/                             # Producto, arquitectura, ADR y entrega
+  Program.cs                     # Raíz de composición del monolito
+  Adapters/Http/                 # JSON, rutas, Problem Details y ETag
+  Adapters/Oidc/                 # Protocolo OIDC, cookies y antiforgery
+web/src/app/
+  domain/                        # Modelos TypeScript
+  application/                   # Casos de uso y puerto CatalogGateway
+  adapters/                      # HTTP, CSRF y navegación de autenticación
+  catalog-app.*                  # Presentación Angular
+  composition.ts                 # Inyección del adaptador
+contracts/{openapi,schemas}/      # API v1 y esquema 0.1.0 sin cambios
+tests/                          # Dominio, aplicación, API/base y OIDC
+web/tests/                       # Casos de uso/adaptador TypeScript sin navegador
+web/e2e/                         # Playwright contra servicios reales
+scripts/                         # Preparación y verificadores locales/limpios
+docs/                            # Producto, arquitectura, ADR y entrega
 ```
+
+El grafo es `Api → Application → Domain` e `Infrastructure → Application`; Api conoce Infrastructure solo en la composición. [Puertos, responsabilidades y transacción](docs/architecture/clean-hexagonal.md).
+
+Para el ciclo de desarrollo sin PostgreSQL/IdP: `python3 scripts/verify-core-i1.py` tras instalar dependencias web. La aceptación completa mantiene servicios reales; el núcleo TypeScript compila sin DOM/Angular y el núcleo .NET sin ASP.NET/Npgsql.
 
 ## Dirección y límites
 

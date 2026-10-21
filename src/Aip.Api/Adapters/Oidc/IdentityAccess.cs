@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Aip.Infrastructure.Postgres;
 using Aip.Modules.Catalog;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Npgsql;
 
 namespace Aip.Modules.IdentityAccess;
 
@@ -91,13 +89,9 @@ public static class IdentityAccess
                     context.Properties.Items.TryGetValue("aip:verified_issuer", out var iss);
                     context.Properties.Items.Remove("aip:verified_subject"); context.Properties.Items.Remove("aip:verified_issuer");
                     if (string.IsNullOrEmpty(sub) || iss != authority) { context.HandleResponse(); await WriteAuthFailure(context.HttpContext); return; }
-                    await using var db = new DbSession(context.HttpContext.RequestServices.GetRequiredService<NpgsqlDataSource>());
-                    await db.Begin(Guid.Empty);
-                    await db.Execute("SELECT set_config('app.issuer',@issuer,true),set_config('app.external_subject',@subject,true)", ("issuer", iss), ("subject", sub));
-                    await db.Execute("INSERT INTO identity.subjects(id,issuer,external_subject) VALUES(@id,@issuer,@subject) ON CONFLICT(issuer,external_subject) DO NOTHING", ("id", Guid.NewGuid()), ("issuer", iss), ("subject", sub));
-                    var id = await db.Scalar("SELECT id FROM identity.subjects WHERE issuer=@issuer AND external_subject=@subject AND status='active'", ("issuer", iss), ("subject", sub));
+                    var identity = context.HttpContext.RequestServices.GetRequiredService<IdentityService>();
+                    var id = await identity.ResolveVerifiedSubject(iss, sub);
                     if (id is not Guid actor) { context.HandleResponse(); await WriteAuthFailure(context.HttpContext); return; }
-                    await db.Transaction.CommitAsync();
                     // The BFF retains only identity, never access/refresh/ID tokens or provider roles.
                     context.Principal = new ClaimsPrincipal(new ClaimsIdentity([
                         new Claim(ClaimTypes.NameIdentifier, actor.ToString()),
@@ -138,18 +132,14 @@ public static class IdentityAccess
             await csrf.ValidateRequestAsync(context);
             return Results.SignOut(new AuthenticationProperties { RedirectUri = "/" }, [CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme]);
         }).RequireAuthorization();
-        app.MapGet("/api/session", async (HttpContext context, IAntiforgery csrf, DbSession db) =>
+        app.MapGet("/api/session", async (HttpContext context, IAntiforgery csrf, IdentityService identity) =>
         {
-            object[] organizations = [];
+            IReadOnlyList<OrganizationMembership> organizations = [];
             string? username = null;
             if (context.User.Identity?.IsAuthenticated == true)
             {
-                await db.Begin(Guid.Parse(context.User.FindFirstValue(ClaimTypes.NameIdentifier)!));
-                if (await db.Scalar("SELECT id FROM identity.subjects WHERE id=@actor AND status='active'", ("actor", db.ActorId)) is null)
-                    throw new ApiProblem(401, "AUTH_SUBJECT", "Identidad revocada");
-                organizations = (await db.Rows("SELECT json_build_object('id',o.id,'name',o.name,'role',m.role)::text FROM identity.organizations o JOIN identity.memberships m ON m.organization_id=o.id WHERE m.subject_id=@actor ORDER BY o.name", ("actor", db.ActorId))).Cast<object>().ToArray();
+                organizations = await identity.Organizations(Guid.Parse(context.User.FindFirstValue(ClaimTypes.NameIdentifier)!));
                 username = context.User.Identity.Name;
-                await db.Transaction.CommitAsync();
             }
             var tokens = csrf.GetAndStoreTokens(context);
             return Results.Ok(new { username, organizations, csrf_token = tokens.RequestToken });

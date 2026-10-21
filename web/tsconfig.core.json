@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "lib": ["ES2022"],
+    "types": [],
+    "noEmit": true
+  },
+  "files": [
+    "src/app/domain/catalog-model.ts",
+    "src/app/application/catalog-workspace.ts"
+  ]
+}

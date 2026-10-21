@@ -13,6 +13,7 @@
 | RQ-005 | Incluir un agente legal-regulatorio con trazabilidad normativa, control de vigencia, análisis de aplicabilidad y aprobación humana. |
 | RQ-006 | Diseñar aislamiento por organización desde el inicio. |
 | RQ-007 | Partir de Angular/TypeScript, .NET modular, Python, PostgreSQL, OpenAPI, JSON Schema y documentación Markdown/Mermaid/ADR; evaluar Neo4j como alternativa. Registrar las decisiones tecnológicas como propuestas. |
+| RQ-009 | Trabajar el entorno de desarrollo y código con Clean Architecture y arquitectura hexagonal, por instrucción posterior del usuario; ADR-0015. |
 | RQ-008 | Producir primero una fundación documental versionada, backlog, primer vertical slice y especificación del catálogo. No implementar sin aprobación. |
 
 ## Resultados buscados

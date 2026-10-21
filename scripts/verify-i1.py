@@ -160,6 +160,7 @@ try:
         ),
         "Generated contracts drift from versioned files",
     )
+    run([sys.executable, "scripts/check-architecture.py"])
     run([DOTNET, "restore", "src/Aip.Api", "--locked-mode"])
     run([DOTNET, "build", "src/Aip.Api", "--no-restore"])
     run([DOTNET, "restore", "tests/Aip.Catalog.Domain.Tests", "--locked-mode"])
@@ -175,6 +176,21 @@ try:
             str(REPORTS),
         ]
     )
+    run([DOTNET, "restore", "tests/Aip.Application.Tests", "--locked-mode"])
+    run(
+        [
+            DOTNET,
+            "test",
+            "tests/Aip.Application.Tests",
+            "--no-restore",
+            "--logger",
+            "trx;LogFileName=application.trx",
+            "--results-directory",
+            str(REPORTS),
+        ]
+    )
+    run(["npm", "run", "test:core"], ROOT / "web")
+    run(["npm", "run", "test:unit"], ROOT / "web")
     run(["npm", "run", "build"], ROOT / "web")
     try:
         require(
@@ -290,7 +306,7 @@ try:
     versions_sql = "SELECT coalesce(json_agg(t ORDER BY version),'[]'::json)::text FROM (SELECT version,checksum FROM public.schema_migrations) t;"
     before = db_sql(versions_sql, owner=True)
     require(before.returncode == 0, "Cannot inspect migration ledger")
-    migrations = ROOT / "src/Aip.Api/Infrastructure/Postgres/Migrations"
+    migrations = ROOT / "src/Aip.Infrastructure/Postgres/Migrations"
     with tempfile.TemporaryDirectory(prefix="checksum-probe-", dir=DEV) as temporary:
         probe = Path(temporary) / "migrations"
         shutil.copytree(migrations, probe)
@@ -319,6 +335,29 @@ try:
         and int(domain.attrib["passed"]) == int(domain.attrib["total"]),
         "Domain suite must fully pass",
     )
+    application = (
+        ET.parse(REPORTS / "application.trx")
+        .getroot()
+        .find(".//{http://microsoft.com/schemas/VisualStudio/TeamTest/2010}Counters")
+    )
+    require(
+        application is not None
+        and int(application.attrib["total"]) > 0
+        and int(application.attrib["passed"]) == int(application.attrib["total"]),
+        "Application suite must fully pass",
+    )
+    web_unit = ET.parse(ROOT / ".local/web-unit/results.xml").getroot()
+    web_cases = web_unit.findall(".//testcase")
+    require(
+        len(web_cases) > 0
+        and not any(
+            case.find(field) is not None
+            for case in web_cases
+            for field in ["failure", "error", "skipped"]
+        ),
+        "Web unit suite must fully pass",
+    )
+    shutil.copyfile(ROOT / ".local/web-unit/results.xml", REPORTS / "web-unit.xml")
     api_result = json.loads((REPORTS / "api.json").read_text())
     require(
         api_result["total"] > 0
@@ -331,6 +370,10 @@ try:
         {
             "result": "PASS",
             "domain_tests": int(domain.attrib["total"]),
+            "application_tests": int(application.attrib["total"]),
+            "web_unit_tests": len(web_cases),
+            "architecture_boundaries": "PASS",
+            "typescript_without_dom_angular": "PASS",
             "api_database_tests": api_result["total"],
             "api_cases": api_result["cases"],
             "browser_tests": browser_report("browser-setup.json")

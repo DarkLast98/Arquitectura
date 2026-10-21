@@ -1,5 +1,13 @@
 # Historial de AIP
 
+## I1 — Clean Architecture y arquitectura hexagonal — 2026-10-21 America/Bogota
+
+- ADR-0015 autorizado por instrucción explícita del usuario; monolito separado en Domain, Application, Infrastructure y Api.
+- Puertos tipados de catálogo, identidad, organización y auditoría; casos de uso independientes de HTTP, JSON y SQL.
+- Angular con modelos/casos de uso TypeScript, puerto y adaptador HTTP compuesto mediante inyección.
+- Solución para IDE, verificador rápido sin servicios, controles de dependencias y nuevas pruebas del núcleo/adaptadores.
+- Contratos, SPEC, ontología y seis migraciones conservados; nueva aceptación limpia en curso antes del dictamen.
+
 ## I1 — revisión técnica final para integración — 2026-10-21 America/Bogota
 
 - Dictamen técnico favorable con fusión humana pendiente; matriz completa AC-01–14/OIDC-01–07 y evidencia sanitizada en Git.

@@ -1,6 +1,6 @@
 # Estado de AIP
 
-**Fecha:** 2026-10-21 America/Bogota. **Fase:** I1 / Trabajo B con dictamen técnico favorable para integrar el PR #1 mediante decisión humana. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
+**Fecha:** 2026-10-21 America/Bogota. **Fase:** refactorización de I1 a Clean Architecture/hexagonal autorizada, pendiente de nueva validación técnica del PR #1. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
 
 ## Evidencia y autorización
 
@@ -14,6 +14,10 @@
 La petición del usuario de revisión técnica final del 2026-10-21 confirma arquitectura y alcance I1 para validación y mantiene la fusión condicionada. Autoriza corregir defectos bloqueantes dentro de I1; no autoriza producción, fusión automática o I2.
 
 El commit `6a187c1` registra la autorización antes de los commits de implementación. Se concreta el proveedor de desarrollo recomendado en Keycloak **26.8.1**, release oficial estable de 2026-10-13, ejecutado con JDK 21. Certificados, secretos y sujetos de prueba se preparan localmente fuera de Git. La visión comercial y los diseños futuros no se consideran validados por estas pruebas.
+
+## Autorización de refactorización
+
+2026-10-21 America/Bogota: el usuario solicita «trabaja el entorno de desarrollo y codigo bajo clean architecture, en una arquitectura exagonal». Autoriza reorganizar entorno/código de I1 conforme a [ADR-0015](decisiones/0015-clean-architecture-hexagonal.md), preservando SPEC-CAT-001, contratos, comportamiento y datos. No requiere volver a pedir aprobación del mismo trabajo. [Plan, criterios y evidencia](delivery/refactor-clean-hexagonal-i1.md). El dictamen anterior corresponde al commit evaluado y no valida automáticamente esta refactorización.
 
 ## Resultado de Trabajo B
 
@@ -46,7 +50,7 @@ Se reutilizó código compatible de catálogo/interfaz del prototipo local, sust
 
 ## Próxima acción
 
-Revisar el PR #1 y su [dictamen técnico favorable de I1](delivery/revision-tecnica-final-i1.md); cualquier fusión corresponde a una decisión humana. Después, definir I2 y comparar v0.2 cuando exista una fuente publicada, sin alterar contratos I1 ni comenzar ese desarrollo por esta autorización. [PLANS](../PLANS.md) mantiene el alcance recomendado.
+Completar la validación limpia de la refactorización Clean/hexagonal y actualizar la evidencia del PR #1; cualquier fusión corresponde a una decisión humana. Después, definir I2 y comparar v0.2 cuando exista una fuente publicada, sin alterar contratos I1 ni comenzar ese desarrollo por esta autorización. [PLANS](../PLANS.md) mantiene el alcance recomendado.
 
 ## Revisión final de integración
 

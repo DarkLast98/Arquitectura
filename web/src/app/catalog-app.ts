@@ -1,63 +1,13 @@
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, signal, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-
-type Role = "organization_admin" | "architect" | "reader";
-interface Organization {
-  id: string;
-  name: string;
-  role: Role;
-}
-interface Session {
-  csrf_token: string;
-  username: string | null;
-  organizations: Organization[];
-}
-interface Entity {
-  id: string;
-  organization_id: string;
-  type_id: string;
-  schema_version: string;
-  code: string;
-  name: string;
-  description: string | null;
-  classification: string;
-  status: string;
-  revision: number;
-}
-interface Relationship {
-  id: string;
-  type_id: string;
-  source_entity_id: string;
-  target_entity_id: string;
-  description: string | null;
-  status: string;
-  revision: number;
-}
-interface Audit {
-  id: string;
-  operation: string;
-  resource_kind: string;
-  resource_id: string;
-  previous_revision: number | null;
-  new_revision: number;
-  occurred_at: string;
-  changed_fields: string[];
-}
-interface Page<T> {
-  items: T[];
-  total: number;
-  limit: number;
-  offset: number;
-}
-class ApiError extends Error {
-  constructor(
-    public status: number,
-    public code: string,
-    message: string,
-  ) {
-    super(message);
-  }
-}
+import type {
+  Entity,
+  Relationship,
+  Audit,
+  Session,
+} from "./domain/catalog-model";
+import { CatalogError } from "./application/catalog-workspace";
+import { CATALOG } from "./catalog-token";
 
 @Component({
   selector: "aip-root",
@@ -66,6 +16,8 @@ class ApiError extends Error {
   templateUrl: "./catalog-app.html",
 })
 export class App {
+  private readonly catalog = inject(CATALOG);
+  private readonly gateway = this.catalog.gateway;
   session = signal<Session | null>(null);
   orgId = signal("");
   busy = signal(false);
@@ -126,37 +78,6 @@ export class App {
   label(type: string) {
     return this.entityTypes.find((t) => t.id === type)?.label ?? type;
   }
-  async request<T>(
-    path: string,
-    method = "GET",
-    body?: object,
-    etag?: number,
-  ): Promise<T> {
-    const headers: Record<string, string> = {};
-    if (body) headers["Content-Type"] = "application/json";
-    if (method !== "GET")
-      headers["X-CSRF-TOKEN"] = this.session()?.csrf_token ?? "";
-    if (etag !== undefined) headers["If-Match"] = '"' + etag + '"';
-    const response = await fetch(path, {
-      method,
-      headers,
-      credentials: "same-origin",
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    if (!response.ok) {
-      const p = await response.json().catch(() => ({
-        title: "Petición no disponible",
-        code: "HTTP_" + response.status,
-      }));
-      throw new ApiError(response.status, p.code, p.title);
-    }
-    return response.status === 204
-      ? (undefined as T)
-      : ((await response.json()) as T);
-  }
-  base() {
-    return "/api/v1/organizations/" + this.orgId() + "/catalog";
-  }
   async run(action: () => Promise<void>) {
     if (this.busy()) return;
     this.busy.set(true);
@@ -166,7 +87,7 @@ export class App {
       await action();
     } catch (e) {
       this.error.set(
-        e instanceof ApiError
+        e instanceof CatalogError
           ? e.message + " (" + e.code + ")"
           : "No se pudo conectar. Intenta de nuevo.",
       );
@@ -175,25 +96,16 @@ export class App {
     }
   }
   async loadSession() {
-    const s = await this.request<Session>("/api/session");
+    const s = await this.gateway.session();
     this.session.set(s);
     this.orgId.set(s.organizations[0]?.id ?? "");
     if (this.orgId()) await this.loadEntities();
   }
   login() {
-    window.location.assign("/auth/login");
+    this.gateway.login();
   }
   logout() {
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "/auth/logout";
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "__RequestVerificationToken";
-    input.value = this.session()?.csrf_token ?? "";
-    form.appendChild(input);
-    document.body.appendChild(form);
-    form.submit();
+    this.gateway.logout();
   }
 
   clearContext() {
@@ -234,16 +146,13 @@ export class App {
   }
   async loadEntities() {
     const epoch = this.epoch;
-    const q = new URLSearchParams({
+    const page = await this.gateway.entities(this.orgId(), {
       status: this.status,
-      limit: "20",
-      offset: String(this.offset()),
+      limit: 20,
+      offset: this.offset(),
+      ...(this.query ? { q: this.query } : {}),
+      ...(this.filterType ? { type_id: this.filterType } : {}),
     });
-    if (this.query) q.set("q", this.query);
-    if (this.filterType) q.set("type_id", this.filterType);
-    const page = await this.request<Page<Entity>>(
-      this.base() + "/entities?" + q,
-    );
     if (epoch === this.epoch) {
       this.entities.set(page.items);
       this.total.set(page.total);
@@ -259,9 +168,7 @@ export class App {
   }
   choose(entity: Entity) {
     void this.run(async () => {
-      const e = await this.request<Entity>(
-        this.base() + "/entities/" + entity.id,
-      );
+      const e = await this.gateway.entity(this.orgId(), entity.id);
       this.edit(e);
       await this.loadRelations(e.id);
     });
@@ -286,33 +193,19 @@ export class App {
   saveEntity() {
     void this.run(async () => {
       const selected = this.selected();
-      const body = selected
-        ? {
-            name: this.entityDraft.name,
-            description: this.entityDraft.description || null,
-            classification: this.entityDraft.classification,
-          }
-        : {
-            ...this.entityDraft,
-            schema_version: "0.1.0",
-            description: this.entityDraft.description || null,
-          };
       try {
-        const e = await this.request<Entity>(
-          this.base() + "/entities" + (selected ? "/" + selected.id : ""),
-          selected ? "PATCH" : "POST",
-          body,
-          selected?.revision,
+        const e = await this.catalog.saveEntity(
+          this.orgId(),
+          this.entityDraft,
+          selected,
         );
         this.edit(e);
         this.notice.set(selected ? "Cambios guardados." : "Entidad creada.");
         await this.loadEntities();
       } catch (e) {
-        if (e instanceof ApiError && e.status === 412 && selected)
+        if (e instanceof CatalogError && e.status === 412 && selected)
           this.conflict.set(
-            await this.request<Entity>(
-              this.base() + "/entities/" + selected.id,
-            ),
+            await this.gateway.entity(this.orgId(), selected.id),
           );
         throw e;
       }
@@ -333,10 +226,9 @@ export class App {
     )
       return;
     void this.run(async () => {
-      const archived = await this.request<Entity>(
-        this.base() + "/entities/" + e.id + "/archive",
-        "POST",
-        undefined,
+      const archived = await this.gateway.archiveEntity(
+        this.orgId(),
+        e.id,
         e.revision,
       );
       this.edit(archived);
@@ -345,12 +237,11 @@ export class App {
     });
   }
   async loadRelations(entityId?: string, offset = 0) {
-    const p = await this.request<Page<Relationship>>(
-      this.base() +
-        "/relationships?limit=20&offset=" +
-        offset +
-        (entityId ? "&entity_id=" + entityId : ""),
-    );
+    const p = await this.gateway.relationships(this.orgId(), {
+      limit: 20,
+      offset,
+      ...(entityId ? { entity_id: entityId } : {}),
+    });
     this.relationships.set(p.items);
     this.relationTotal.set(p.total);
     this.relationOffset.set(offset);
@@ -370,9 +261,7 @@ export class App {
     );
   }
   async loadAudit(offset = 0) {
-    const p = await this.request<Page<Audit>>(
-      this.base() + "/audit-events?limit=20&offset=" + offset,
-    );
+    const p = await this.gateway.audit(this.orgId(), { limit: 20, offset });
     this.audit.set(p.items);
     this.auditTotal.set(p.total);
     this.auditOffset.set(offset);
@@ -398,24 +287,14 @@ export class App {
     });
   }
   async loadOptions() {
-    const source = await this.request<Page<Entity>>(
-      this.base() +
-        "/entities?limit=100&type_id=core.application&q=" +
-        encodeURIComponent(this.sourceQuery),
+    const options = await this.catalog.options(
+      this.orgId(),
+      this.relationDraft.type_id,
+      this.sourceQuery,
+      this.targetQuery,
     );
-    this.applications.set(source.items);
-    const targetType =
-      this.relationDraft.type_id === "core.supports"
-        ? "core.business_capability"
-        : "core.data_asset";
-    const target = await this.request<Page<Entity>>(
-      this.base() +
-        "/entities?limit=100&type_id=" +
-        targetType +
-        "&q=" +
-        encodeURIComponent(this.targetQuery),
-    );
-    this.targets.set(target.items);
+    this.applications.set(options.source);
+    this.targets.set(options.target);
   }
   findOptions() {
     void this.run(() => this.loadOptions());
@@ -427,11 +306,7 @@ export class App {
   }
   saveRelation() {
     void this.run(async () => {
-      await this.request(this.base() + "/relationships", "POST", {
-        ...this.relationDraft,
-        schema_version: "0.1.0",
-        description: this.relationDraft.description || null,
-      });
+      await this.catalog.createRelationship(this.orgId(), this.relationDraft);
       await this.loadRelations();
       this.notice.set("Relación creada.");
     });
@@ -439,12 +314,7 @@ export class App {
   archiveRelation(r: Relationship) {
     if (!confirm("¿Archivar esta relación?")) return;
     void this.run(async () => {
-      await this.request(
-        this.base() + "/relationships/" + r.id + "/archive",
-        "POST",
-        undefined,
-        r.revision,
-      );
+      await this.gateway.archiveRelationship(this.orgId(), r.id, r.revision);
       await this.loadRelations(
         this.tab() === "entities" ? this.selected()?.id : undefined,
       );
@@ -460,7 +330,7 @@ export class App {
   }
   navigate(id: string) {
     void this.run(async () => {
-      const e = await this.request<Entity>(this.base() + "/entities/" + id);
+      const e = await this.gateway.entity(this.orgId(), id);
       this.tab.set("entities");
       this.edit(e);
       await this.loadRelations(e.id);

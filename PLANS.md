@@ -1,6 +1,10 @@
 # Plan de evolución de AIP
 
-**I1 / Trabajo B validado técnicamente para integrar; fusión humana pendiente del PR #1.** Evidencia: usuario «aprobado, implementa el PR», referido a PLAN-I1-B v1.0 en `469f2dc`. No se autoriza fusión automática, despliegue ni I2.
+**I1 / Trabajo B: refactorización Clean Architecture/hexagonal autorizada; nueva validación técnica y fusión humana pendientes del PR #1.** Evidencia: usuario «aprobado, implementa el PR», referido a PLAN-I1-B v1.0 en `469f2dc`. No se autoriza fusión automática, despliegue ni I2.
+
+## Refactorización autorizada de I1
+
+La instrucción posterior del usuario de trabajar entorno/código con Clean Architecture y arquitectura hexagonal autoriza [ADR-0015](docs/decisiones/0015-clean-architecture-hexagonal.md) y el [plan de refactorización](docs/delivery/refactor-clean-hexagonal-i1.md). Incluye capas compilables, puertos/adaptadores, frontend y verificador local. Preserva el alcance aprobado y exige repetir aceptación antes de extender el dictamen al código nuevo.
 
 ## Trabajo B
 
