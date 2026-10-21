@@ -1,10 +1,10 @@
 # Plan de evolución de AIP
 
-**I1 / Trabajo B autorizado e implementado; pendiente revisión del PR #1.** Evidencia: usuario «aprobado, implementa el PR», referido a PLAN-I1-B v1.0 en `469f2dc`. No se autoriza fusión automática, despliegue ni I2.
+**I1 / Trabajo B validado técnicamente para integrar; fusión humana pendiente del PR #1.** Evidencia: usuario «aprobado, implementa el PR», referido a PLAN-I1-B v1.0 en `469f2dc`. No se autoriza fusión automática, despliegue ni I2.
 
 ## Trabajo B
 
-[Plan aprobado](docs/delivery/plan-implementacion-i1-trabajo-b.md), [resultado verificable](docs/delivery/evidencia-i1-trabajo-b.md), [ejecución local](docs/delivery/ejecucion-local-i1.md). Rama `feature/i1-catalog-foundation`, creada desde `main/25c4fcc`.
+[Plan aprobado](docs/delivery/plan-implementacion-i1-trabajo-b.md), [dictamen final y matriz de aceptación](docs/delivery/revision-tecnica-final-i1.md), [ejecución local](docs/delivery/ejecucion-local-i1.md). Rama `feature/i1-catalog-foundation`, creada desde `main/25c4fcc`.
 
 | Etapa de I1 | Resultado | Estado |
 | --- | --- | --- |

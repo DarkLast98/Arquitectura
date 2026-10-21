@@ -1,6 +1,6 @@
 # Estado de AIP
 
-**Fecha:** 2026-10-20 UTC. **Fase:** I1 / Trabajo B implementado y verificado para revisión del PR #1. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
+**Fecha:** 2026-10-21 America/Bogota. **Fase:** I1 / Trabajo B con dictamen técnico favorable para integrar el PR #1 mediante decisión humana. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
 
 ## Evidencia y autorización
 
@@ -11,6 +11,8 @@
 | 2026-10-19 | Solicitud «AIP — Trabajo B: Preparación e implementación de I1». | Plan y PR desde la última main; no aceptar ADR ni codificar sin autorización posterior. |
 | 2026-10-20 UTC / 2026-10-19 America/Bogota | Usuario «aprobado, implementa el PR», referido al PR [#1](https://github.com/DarkLast98/Arquitectura/pull/1), PLAN-I1-B v1.0 en `469f2dc`. | Autoriza B0–B3 e implementación exclusiva de SPEC-CAT-001, con OIDC configurable. Acepta ADR-0002/0003/0004/0006/0008/0009/0010, fronteras de 0011, y ADR-0013/0014 para I1. Sin agentes, Neo4j, cambios incompatibles del metamodelo, despliegue productivo o fusión automática. |
 
+La petición del usuario de revisión técnica final del 2026-10-21 confirma arquitectura y alcance I1 para validación y mantiene la fusión condicionada. Autoriza corregir defectos bloqueantes dentro de I1; no autoriza producción, fusión automática o I2.
+
 El commit `6a187c1` registra la autorización antes de los commits de implementación. Se concreta el proveedor de desarrollo recomendado en Keycloak **26.8.1**, release oficial estable de 2026-10-13, ejecutado con JDK 21. Certificados, secretos y sujetos de prueba se preparan localmente fuera de Git. La visión comercial y los diseños futuros no se consideran validados por estas pruebas.
 
 ## Resultado de Trabajo B
@@ -18,7 +20,7 @@ El commit `6a187c1` registra la autorización antes de los commits de implementa
 - Un host .NET modular sirve catálogo y Angular por HTTPS; OIDC oficial Code + PKCE/PAR, cookie segura y antiforgery. Sin contraseñas en AIP ni tokens OIDC en el navegador.
 - PostgreSQL transaccional con sujeto `(issuer,sub)`, membresías activas, RLS forzada, rol no propietario, permisos por columna, FKs organizacionales, revisión optimista y auditoría atómica.
 - Tres tipos de entidad y dos relaciones estables; altas, consultas, edición permitida, archivo lógico, filtros/páginas y errores uniformes.
-- Verificación completa: **5** pruebas de dominio, **11** API/base, **19** navegador; OpenAPI/JSON Schema, reinicio de API, migraciones repetibles y fallo seguro de configuración/IdP. [Evidencia, comandos y límites](delivery/evidencia-i1-trabajo-b.md).
+- Verificación completa: **6** pruebas de dominio, **16** API/base, **19** navegador; OpenAPI/JSON Schema, reinicio de API, migraciones repetibles y fallo seguro de configuración/IdP. [Dictamen final, matriz y evidencia](delivery/revision-tecnica-final-i1.md).
 - [Ejecución local](delivery/ejecucion-local-i1.md) documentada. No se despliega infraestructura ni se fusiona el PR.
 
 ## Línea base y coordinación
@@ -44,4 +46,8 @@ Se reutilizó código compatible de catálogo/interfaz del prototipo local, sust
 
 ## Próxima acción
 
-Revisar el PR #1 y la evidencia de I1; cualquier fusión corresponde a una decisión humana. Después, definir I2 y comparar v0.2 cuando exista una fuente publicada, sin alterar contratos I1 ni comenzar ese desarrollo por esta autorización. [PLANS](../PLANS.md) mantiene el alcance recomendado.
+Revisar el PR #1 y su [dictamen técnico favorable de I1](delivery/revision-tecnica-final-i1.md); cualquier fusión corresponde a una decisión humana. Después, definir I2 y comparar v0.2 cuando exista una fuente publicada, sin alterar contratos I1 ni comenzar ese desarrollo por esta autorización. [PLANS](../PLANS.md) mantiene el alcance recomendado.
+
+## Revisión final de integración
+
+Código evaluado `2a27cb8`, con dependencias reinstaladas, cachés vacías, PostgreSQL y Keycloak nuevos. 41 pruebas pasan, contratos y migraciones verificados; se corrigieron permisos de auditoría en variantes de URL, validación Unicode y avisos npm, y se activó validación `date-time` en Python. La [matriz final](delivery/revision-tecnica-final-i1.md) vincula AC-01–14, OIDC-01–07, ADR y resultados sanitizados. SPEC y ontología no cambian. El PR recibe los commits mediante Git; la API REST de GitHub está bloqueada por el proxy, por lo que no se afirma una actualización de su descripción ni una aprobación remota. No se fusiona ni despliega.

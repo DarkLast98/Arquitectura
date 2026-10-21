@@ -1,5 +1,12 @@
 # Historial de AIP
 
+## I1 — revisión técnica final para integración — 2026-10-21 America/Bogota
+
+- Dictamen técnico favorable con fusión humana pendiente; matriz completa AC-01–14/OIDC-01–07 y evidencia sanitizada en Git.
+- Correcciones de autorización de auditoría por endpoint, rechazo Unicode sin 500 y avisos de herramientas npm; formato `date-time` de pruebas Python garantizado.
+- Verificador limpio reproducible, reportes reales y rechazo de checksum en copias privadas; 6 pruebas de dominio, 16 API/base y 19 navegador pasan.
+- SPEC/ontología y migraciones aplicadas intactas; sin fusión, producción o I2. Limitación de API de GitHub y riesgos residuales documentados.
+
 ## I1 / Trabajo B — implementación para revisión — 2026-10-20 UTC
 
 - Aprobación explícita de PLAN-I1-B v1.0 registrada; ADR aplicables aceptados únicamente para I1.

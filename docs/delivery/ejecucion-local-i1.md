@@ -67,3 +67,9 @@ RLS forzada requiere contexto transaccional de sujeto y organización y membres�
 ## Límites y operación posterior
 
 Este entorno usa datos sintéticos y claves de protección de cookies en un directorio privado sin cifrado externo; PostgreSQL se comunica por loopback y Keycloak usa H2 local. Una puesta en producción necesita gestión/cifrado de secretos y claves, proveedor/base del IdP operados, TLS de base, backup/restore, observabilidad, disponibilidad, límites y gobierno de membresías. Esas tareas no están autorizadas en I1. Tampoco lo están agentes, Neo4j o extensiones del metamodelo.
+
+## Revisión de un commit en entorno limpio
+
+Con el checkout sin cambios pendientes, los prerrequisitos instalados y libres 55432, 8443, 7240–7243, 7443/7444, ejecutar `python3 scripts/verify-clean-i1.py`. El wrapper exporta HEAD en un directorio temporal privado, crea un venv y cachés nuevos, copia Keycloak sin datos y prepara PostgreSQL/TLS/sesiones desde cero. Requiere permiso para confiar la CA en NSS; no omite TLS. Al terminar detiene PostgreSQL y los procesos de prueba creados, conserva los artefactos privados y anuncia la ruta de `clean-review.json` con el commit exacto.
+
+`verify-i1.py` escribe RUNNING/PASS/FAIL por ejecución y deriva conteos de reportes TRX/JSON, incluyendo la prueba de checksum alterado sobre copias privadas. El wrapper añade auditorías npm/NuGet y `pip check`; una auditoría fallida no produce dictamen PASS. El [dictamen de integración](revision-tecnica-final-i1.md) explica el alcance de las consultas adicionales de seguridad y contiene la evidencia sanitizada. AJV 8.20.0/Vite 8.3.3 corrigen los avisos detectados; el resto de versiones del producto permanece fijado como antes.

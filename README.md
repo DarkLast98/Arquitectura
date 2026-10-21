@@ -2,7 +2,7 @@
 
 Plataforma propia de gestión agéntica de arquitectura, desde la estrategia empresarial hasta la arquitectura de solución. Producto comercializable, inicialmente orientado al sector financiero, con un Core transversal y paquetes de conocimiento por industria y jurisdicción.
 
-**I1 implementado para revisión en PR #1:** catálogo manual Angular → API .NET modular → PostgreSQL, con OIDC configurable, aislamiento por organización, revisión optimista y auditoría transaccional. La aprobación «aprobado, implementa el PR» cubre PLAN-I1-B v1.0; la fusión y los incrementos siguientes siguen pendientes.
+**I1 listo técnicamente para integrar mediante decisión humana, PR #1:** catálogo manual Angular → API .NET modular → PostgreSQL, con OIDC configurable, aislamiento por organización, revisión optimista y auditoría transaccional. La aprobación «aprobado, implementa el PR» cubre PLAN-I1-B v1.0; la fusión y los incrementos siguientes siguen pendientes.
 
 El catálogo conserva tres tipos de entidad y dos relaciones de SPEC-CAT-001 v0.1.0. Keycloak 26.8.1 proporciona identidad local de desarrollo mediante Code + PKCE/PAR; AIP no recibe contraseñas. No hay agentes, Neo4j, extensiones del metamodelo ni despliegue cloud.
 
@@ -18,7 +18,9 @@ python3 scripts/trust-dev-ca.py
 python3 scripts/verify-i1.py
 ```
 
-El verificador compila y ejecuta dominio, API/PostgreSQL, navegador, contratos, persistencia tras reinicio y fallos de OIDC. Usa únicamente datos sintéticos y certificados verificados. Secretos, sesiones y bases locales quedan fuera de Git. [Evidencia y límites de la entrega](docs/delivery/evidencia-i1-trabajo-b.md).
+El verificador compila y ejecuta dominio, API/PostgreSQL, navegador, contratos, persistencia tras reinicio y fallos de OIDC. Usa únicamente datos sintéticos y certificados verificados. Secretos, sesiones y bases locales quedan fuera de Git. [Dictamen final, matriz y riesgos](docs/delivery/revision-tecnica-final-i1.md): 41 pruebas pasan (6 dominio, 16 API/base, 19 navegador) en una exportación limpia. [Evidencia inicial de la entrega](docs/delivery/evidencia-i1-trabajo-b.md).
+
+Para repetir la revisión limpia de un commit, con el checkout sin cambios pendientes: `python3 scripts/verify-clean-i1.py`. Exporta HEAD, reinstala dependencias y crea datos PostgreSQL/Keycloak nuevos.
 
 ## Lectura recomendada
 

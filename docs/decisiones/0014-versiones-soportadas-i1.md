@@ -41,3 +41,9 @@ La combinación propuesta conserva la dirección tecnológica y no altera tipos,
 ## Verificación tras aprobación
 
 Las versiones de la tabla se materializan en `global.json`, `.nvmrc` y manifests/lockfiles de .NET/npm; compilación y pruebas reales de [Trabajo B](../delivery/evidencia-i1-trabajo-b.md) demuestran compatibilidad de esa combinación. Adaptador Npgsql 10.0.3 y manejador OIDC 10.0.13. Keycloak 26.8.1/JDK 21 se concreta en ADR-0013. Las referencias a «antes de implementar» describen la propuesta original, no un bloqueo vigente. El soporte declarado no equivale a una certificación productiva.
+
+## Parches de seguridad en revisión final — 2026-10-21
+
+La revisión técnica autorizada conserva Angular 22.2.3, TypeScript 6.0.3, Node 24.19.0, .NET 10.0.13/SDK 10.0.402 y PostgreSQL 17.11. Se actualiza AJV a **8.20.0** y se fija un override transitorio **Vite 8.3.3** para corregir avisos observados en `npm audit`, sin forzar actualización de Angular ni cambiar arquitectura. Lockfile, instalación limpia, build y navegador verificados; auditoría final sin avisos. Revisar/retirar ese override cuando la dependencia oficial de Angular incorpore la corrección, con su validación correspondiente.
+
+Fuentes del aviso: [AJV GHSA-2g4f-4pwh-qvx6](https://github.com/advisories/GHSA-2g4f-4pwh-qvx6) y avisos Vite registrados con sus IDs/alcances en el dictamen y la consulta npm. Versiones e integridades de [AJV 8.20.0](https://registry.npmjs.org/ajv/8.20.0) y [Vite 8.3.3](https://registry.npmjs.org/vite/8.3.3) verificadas en el registro. Las herramientas Python de prueba fijan también transitivas y el validador RFC3339; no son un runtime agéntico. La [revisión final](../delivery/revision-tecnica-final-i1.md) recoge resultados y límites de las fuentes de seguridad.
