@@ -1,0 +1,441 @@
+{
+  "source_commit": "2a27cb828e788fb01ef64ba6ba522abc8ec34aaa",
+  "source_archive_sha256": "b142b8d13831358d02d8e3c6eea66bfef7908750f9b24c63da07ec3d242af8b1",
+  "fresh": {
+    ".local": true,
+    "web/node_modules": true,
+    "web/dist": true,
+    "src/Aip.Api/bin": true,
+    "src/Aip.Api/obj": true
+  },
+  "result": "PASS",
+  "initial_database": {
+    "entities": 0,
+    "relationships": 0,
+    "audit": 0,
+    "migrations": 6
+  },
+  "verification": {
+    "result": "PASS",
+    "started_utc": "2026-10-21T22:22:31Z",
+    "domain_tests": 6,
+    "api_database_tests": 16,
+    "api_cases": [
+      {
+        "id": "__main__.CatalogTests.test_01_entities_normalization_and_contract",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_02_uniqueness_is_scoped",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_03_relationship_rules",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_04_cross_organization_no_disclosure",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_05_auth_permissions_csrf",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_06_etag_concurrency",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_07_archival_and_history",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_08_archive_create_races",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_09_audit_failure_rolls_back",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_10_database_role_rls_and_context_reset",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_11_paging_filters_and_errors",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_12_audit_permission_follows_endpoint_metadata",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_13_unsupported_unicode_is_validation_and_rolls_back",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_14_archived_uniqueness_and_cross_tenant_foreign_key",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_15_audit_failure_rolls_back_update_and_archive",
+        "result": "PASS"
+      },
+      {
+        "id": "__main__.CatalogTests.test_16_order_filters_and_paging_contract",
+        "result": "PASS"
+      }
+    ],
+    "browser_tests": 19,
+    "contracts": "OpenAPI 3.1 + JSON Schema 2020-12",
+    "restart": "PASS",
+    "fail_closed": "PASS",
+    "migrations_replay": "PASS",
+    "migration_checksum_rejection": "PASS",
+    "utc": "2026-10-21T22:23:28Z"
+  },
+  "npm_vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "nuget_api_advisories": 0,
+  "nuget_domain_tests_advisories": 0,
+  "base_commit": "25c4fccdec6304f34b3e068a93740bfbb830f20b",
+  "baseline_commit": "e60c133c842b6a1d908be7480f35880ac26fc220",
+  "test_count": 41,
+  "postgres_security": {
+    "server": "17.11 (Debian 17.11-0+deb13u1)",
+    "runtime_role": {
+      "name": "aip_i1_app",
+      "superuser": false,
+      "bypass_rls": false,
+      "create_role": false,
+      "create_db": false
+    },
+    "tables": [
+      {
+        "schema": "audit",
+        "table": "catalog_events",
+        "rls": true,
+        "forced": true,
+        "owner": "aip_owner",
+        "runtime_owner": false
+      },
+      {
+        "schema": "catalog",
+        "table": "entities",
+        "rls": true,
+        "forced": true,
+        "owner": "aip_owner",
+        "runtime_owner": false
+      },
+      {
+        "schema": "catalog",
+        "table": "relationships",
+        "rls": true,
+        "forced": true,
+        "owner": "aip_owner",
+        "runtime_owner": false
+      },
+      {
+        "schema": "catalog",
+        "table": "type_definitions",
+        "rls": false,
+        "forced": false,
+        "owner": "aip_owner",
+        "runtime_owner": false
+      },
+      {
+        "schema": "identity",
+        "table": "memberships",
+        "rls": true,
+        "forced": true,
+        "owner": "aip_owner",
+        "runtime_owner": false
+      },
+      {
+        "schema": "identity",
+        "table": "organizations",
+        "rls": true,
+        "forced": true,
+        "owner": "aip_owner",
+        "runtime_owner": false
+      },
+      {
+        "schema": "identity",
+        "table": "subjects",
+        "rls": true,
+        "forced": true,
+        "owner": "aip_owner",
+        "runtime_owner": false
+      }
+    ],
+    "migration_count": 6
+  },
+  "baseline_regressions": {
+    "admin": {
+      "/audit-events": 200,
+      "/audit-events/": 200,
+      "/AUDIT-EVENTS": 200
+    },
+    "architect": {
+      "/audit-events": 403,
+      "/audit-events/": 200,
+      "/AUDIT-EVENTS": 200
+    },
+    "reader": {
+      "/audit-events": 403,
+      "/audit-events/": 200,
+      "/AUDIT-EVENTS": 200
+    },
+    "text": {
+      "name-NUL": {
+        "status": 500,
+        "code": "INTERNAL_ERROR"
+      },
+      "description-NUL": {
+        "status": 500,
+        "code": "INTERNAL_ERROR"
+      },
+      "name-surrogate": {
+        "status": 500,
+        "code": "INTERNAL_ERROR"
+      }
+    }
+  },
+  "python_advisories": {
+    "attrs": {
+      "version": "26.1.0",
+      "source": "PyPI",
+      "ids": []
+    },
+    "jsonschema": {
+      "version": "4.26.0",
+      "source": "PyPI",
+      "ids": []
+    },
+    "jsonschema-specifications": {
+      "version": "2025.9.1",
+      "source": "PyPI",
+      "ids": []
+    },
+    "referencing": {
+      "version": "0.37.0",
+      "source": "PyPI",
+      "ids": []
+    },
+    "rfc3339-validator": {
+      "version": "0.1.4",
+      "source": "PyPI",
+      "ids": []
+    },
+    "rpds-py": {
+      "version": "2026.9.1",
+      "source": "PyPI",
+      "ids": []
+    },
+    "six": {
+      "version": "1.17.0",
+      "source": "PyPI",
+      "ids": []
+    },
+    "typing-extensions": {
+      "version": "4.16.0",
+      "source": "PyPI",
+      "ids": []
+    }
+  },
+  "python_advisory_scope": "PyPI version API, checked 2026-10-21; not an exhaustive ecosystem/SBOM audit",
+  "keycloak_advisory_review": {
+    "scope": "most recent official index, not an exhaustive distribution SBOM scan",
+    "source": "https://github.com/keycloak/keycloak/security/advisories",
+    "advisories": [
+      {
+        "id": "GHSA-2888-g6qc-w4mj",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-2888-g6qc-w4mj",
+        "versions_section": "Affected versions\n< 26.4.14\n< 26.6.5\n< 26.7.0\nPatched versions\n26.4.14\n26.6.5\n26.7.1"
+      },
+      {
+        "id": "GHSA-3692-rrj9-24qw",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-3692-rrj9-24qw",
+        "versions_section": "Affected versions\n< 26.6.5\n< 26.7.1\nPatched versions\n26.6.5\n26.7.1"
+      },
+      {
+        "id": "GHSA-95cx-vmr5-3cmr",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-95cx-vmr5-3cmr",
+        "versions_section": "Affected versions\n< 26.4.14\n< 26.6.5\n< 26.7.1\nPatched versions\n26.4.14\n26.6.5\n26.7.1"
+      },
+      {
+        "id": "GHSA-95rm-h7g9-rhcf",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-95rm-h7g9-rhcf",
+        "versions_section": "Affected versions\n< 26.4.14\n< 26.6.5\n< 26.7.1\nPatched versions\n26.4.14\n26.6.5\n26.7.1"
+      },
+      {
+        "id": "GHSA-f5p5-6xmx-p252",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-f5p5-6xmx-p252",
+        "versions_section": "Affected versions\n< 26.6.4\nPatched versions\n26.6.4\nmaven\norg.keycloak:keycloak-policy-enforcer\n(\nMaven\n)\n< 26.0.10\n26.0.10"
+      },
+      {
+        "id": "GHSA-f8m4-v488-rmrm",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-f8m4-v488-rmrm",
+        "versions_section": "Affected versions\n< 26.4.14\n< 26.6.5\n< 26.37.1\nPatched versions\n26.4.14\n26.6.5\n26.7.1"
+      },
+      {
+        "id": "GHSA-fgq2-hxm5-8xg2",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-fgq2-hxm5-8xg2",
+        "versions_section": "Affected versions\n< 26.4.14\n< 26.6.5\n< 26.7.1\nPatched versions\n26.4.14\n26.6.5\n26.7.1"
+      },
+      {
+        "id": "GHSA-hmr6-pxx9-552p",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-hmr6-pxx9-552p",
+        "versions_section": "Affected versions\n< 26.4.14\n< 26.6.5\n< 26.7.1\nPatched versions\n26.4.14\n26.6.5\n26.7.1"
+      },
+      {
+        "id": "GHSA-j97h-3f8r-mrjr",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-j97h-3f8r-mrjr",
+        "versions_section": "Affected versions\n< 26.6.4\nPatched versions\n26.6.4"
+      },
+      {
+        "id": "GHSA-xpwp-2pcm-8xq3",
+        "url": "https://github.com/keycloak/keycloak/security/advisories/GHSA-xpwp-2pcm-8xq3",
+        "versions_section": "Affected versions\n>= 26.7.0, < 26.7.4\nPatched versions\n26.7.4"
+      }
+    ],
+    "limitations": [
+      "OSV API unavailable through proxy; official vendor pages read instead",
+      "GHSA-f8m4-v488-rmrm has inconsistent affected/patched ranges on the source page; SAML import is not configured in I1",
+      "Only the ten entries on the current vendor index were reviewed, not every bundled JVM dependency"
+    ]
+  },
+  "domain_cases": [
+    "Aip.Catalog.Domain.Tests.Invariants.ArchiveAndRevisionGuardHistory",
+    "Aip.Catalog.Domain.Tests.Invariants.UnsupportedTextIsRejectedBeforePersistence",
+    "Aip.Catalog.Domain.Tests.Invariants.RelationsRespectDirectionAndTenant(type: \"core.uses\", targetType: \"core.data_asset\")",
+    "Aip.Catalog.Domain.Tests.Invariants.UnicodeLimitsCountCharactersAndRejectFutureMetamodel",
+    "Aip.Catalog.Domain.Tests.Invariants.RelationsRespectDirectionAndTenant(type: \"core.supports\", targetType: \"core.business_capability\")",
+    "Aip.Catalog.Domain.Tests.Invariants.IdentityAndCodeSurviveEdits"
+  ],
+  "browser_cases": [
+    {
+      "title": "OIDC real: cuatro perfiles, PKCE S256 y cookies seguras",
+      "status": "passed"
+    },
+    {
+      "title": "AC-01,03,04,07,12: recorrido completo, archivo, texto seguro y separación",
+      "status": "passed"
+    },
+    {
+      "title": "AC-05: lector consulta sin escribir y sin auditoría",
+      "status": "passed"
+    },
+    {
+      "title": "AC-06,12: conflicto preserva formulario y requiere reconciliación",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-03: segundo Authority y ClientId con el mismo email no hereda membresías",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-05: revocar membresía afecta inmediatamente una sesión existente",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-01,06: login, CSRF, cierre OIDC y API sin redirección HTML",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02: rechaza state sin sesión",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02: rechaza signature sin sesión",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02: rechaza issuer sin sesión",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02: rechaza audience sin sesión",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02: rechaza expired sin sesión",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02: rechaza future sin sesión",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02: rechaza nonce sin sesión",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02: rechaza missing-nonce sin sesión",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-03: mismo sub de otro issuer no se asocia al administrador existente",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-07: rotación real de clave Keycloak y recuperación JWKS",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-02,06: retorno externo y cabeceras de suplantación no conceden acceso",
+      "status": "passed"
+    },
+    {
+      "title": "OIDC-05: sujeto revocado no recibe cookie de sesión",
+      "status": "passed"
+    }
+  ],
+  "artifact_sha256": {
+    "domain.trx": "c7a6d65daa923d4157515b93d2349c2d062503cec845e9b581c4dcf1908438e4",
+    "api.json": "81eaa40e6a6bd41e007cdc0f4f35e2da5dbf3a9cd14bbbedea4f3d723b9e07cd",
+    "browser-setup.json": "24eb503eed63d168c29263ae6bd3cdb501429f36d88f793f2ef527d9330b3326",
+    "browser-catalog.json": "18f26beef9f681b2e8c9208ee43d3ecdee3bfc91a47bd5ecc7499bb87764b011"
+  },
+  "artifact_note": "Raw logs, TRX, cookies and browser reports remain private in the disposable review environment; only sanitized results are committed.",
+  "pr_publication": {
+    "rest_api": "proxy tunnel denied with 403; no request reached GitHub",
+    "merge": "not executed",
+    "method": "native Git branch push; PR REST metadata update blocked"
+  },
+  "npm_baseline": {
+    "source": "npm audit --json on e60c133, observed 2026-10-21",
+    "affected_packages": [
+      "@angular/build",
+      "ajv",
+      "vite"
+    ],
+    "severities": {
+      "low": 1,
+      "moderate": 1,
+      "high": 1,
+      "critical": 0
+    },
+    "ajv_advisories": [
+      "GHSA-2g4f-4pwh-qvx6"
+    ],
+    "vite_advisories": [
+      "GHSA-698v-4r3x-3vcv",
+      "GHSA-r825-w8mm-5pxw",
+      "GHSA-587h-7wmj-h5pm",
+      "GHSA-9jrq-w75r-8gcw",
+      "GHSA-rq7h-c2jc-7f22",
+      "GHSA-vfpm-58rq-9qcg"
+    ],
+    "patches": {
+      "ajv": "8.20.0",
+      "vite": "8.3.3"
+    }
+  }
+}

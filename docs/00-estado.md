@@ -1,52 +1,61 @@
 # Estado de AIP
 
-**Versión documental:** 0.1.0 · **Fecha:** 2026-10-19.
+**Fecha:** 2026-10-21 America/Bogota. **Fase:** I1 refactorizado a Clean Architecture/hexagonal y validado técnicamente; revisión/fusión humanas pendientes del PR #1. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
 
-**Fase:** fundación documental. **Implementación:** no autorizada.
+## Evidencia y autorización
 
-## Evidencia y acuerdos
-
-| Fecha | Fuente y acuerdo | Alcance |
+| Fecha | Fuente | Alcance |
 | --- | --- | --- |
-| 2026-10-19 | Instrucción inicial del usuario; [ADR-0001](decisiones/0001-definir-antes-de-implementar.md). | Definir antes de codificar. |
-| 2026-10-19 | Instrucción del usuario que identifica AIP y su visión, dirección tecnológica y restricciones. | Confirma RQ-001–RQ-008 de [GOALS](../GOALS.md) y autoriza exclusivamente la fundación documental. |
+| 2026-10-19 | Definición del producto por el usuario y [ADR-0001](decisiones/0001-definir-antes-de-implementar.md). | Definir antes de codificar; fundación documental de AIP. |
+| 2026-10-19 | Publicación documental y aprobación anterior. | Prototipo local `work/52c653d`, conservado; no valida OIDC de Trabajo B. |
+| 2026-10-19 | Solicitud «AIP — Trabajo B: Preparación e implementación de I1». | Plan y PR desde la última main; no aceptar ADR ni codificar sin autorización posterior. |
+| 2026-10-20 UTC / 2026-10-19 America/Bogota | Usuario «aprobado, implementa el PR», referido al PR [#1](https://github.com/DarkLast98/Arquitectura/pull/1), PLAN-I1-B v1.0 en `469f2dc`. | Autoriza B0–B3 e implementación exclusiva de SPEC-CAT-001, con OIDC configurable. Acepta ADR-0002/0003/0004/0006/0008/0009/0010, fronteras de 0011, y ADR-0013/0014 para I1. Sin agentes, Neo4j, cambios incompatibles del metamodelo, despliegue productivo o fusión automática. |
 
-La hipótesis inicial sobre qué producto construir queda resuelta por la definición explícita de AIP. No hay aprobación de los ADR técnicos, del slice, de aplicaciones, agentes ni infraestructura. La creación o el versionado de los documentos no amplían la autorización.
+La petición del usuario de revisión técnica final del 2026-10-21 confirma arquitectura y alcance I1 para validación y mantiene la fusión condicionada. Autoriza corregir defectos bloqueantes dentro de I1; no autoriza producción, fusión automática o I2.
 
-## Documentación preparada
+El commit `6a187c1` registra la autorización antes de los commits de implementación. Se concreta el proveedor de desarrollo recomendado en Keycloak **26.8.1**, release oficial estable de 2026-10-13, ejecutado con JDK 21. Certificados, secretos y sujetos de prueba se preparan localmente fuera de Git. La visión comercial y los diseños futuros no se consideran validados por estas pruebas.
 
-| Área | Estado de contenido | Fuente canónica |
-| --- | --- | --- |
-| Visión y dirección | Confirmadas por usuario; personas y mercado propuestos/hipotéticos. | [Producto](product/vision.md), [GOALS](../GOALS.md) |
-| Alcance y requisitos derivados | Propuestos. | [Requisitos](product/requisitos.md), [alcance financiero](product/alcance-financiero.md) |
-| Arquitectura y ontología | Propuestas. | [Referencia](architecture/referencia.md), [ontología](architecture/ontologia.md) |
-| Agentes y regulación | Modelos propuestos, sin implementación ni fuentes normativas verificadas. | [Agentes](architecture/agentes.md), [regulación](architecture/regulatorio.md) |
-| Decisiones | ADR-0001 de proceso aceptado; ADR-0002–0011 propuestos. | [ADR](decisiones/README.md) |
-| Backlog y catálogo | Especificados para revisión, no aprobados. | [Backlog](delivery/backlog.md), [SPEC-CAT-001](specs/catalogo-arquitectonico.md) |
+## Autorización de refactorización
+
+2026-10-21 America/Bogota: el usuario solicita «trabaja el entorno de desarrollo y codigo bajo clean architecture, en una arquitectura exagonal». Autoriza reorganizar entorno/código de I1 conforme a [ADR-0015](decisiones/0015-clean-architecture-hexagonal.md), preservando SPEC-CAT-001, contratos, comportamiento y datos. No requiere volver a pedir aprobación del mismo trabajo. [Plan, criterios y evidencia](delivery/refactor-clean-hexagonal-i1.md). El dictamen anterior corresponde al commit evaluado y no valida automáticamente esta refactorización.
+
+## Resultado de Trabajo B
+
+- Un host .NET modular sirve catálogo y Angular por HTTPS; OIDC oficial Code + PKCE/PAR, cookie segura y antiforgery. Sin contraseñas en AIP ni tokens OIDC en el navegador.
+- PostgreSQL transaccional con sujeto `(issuer,sub)`, membresías activas, RLS forzada, rol no propietario, permisos por columna, FKs organizacionales, revisión optimista y auditoría atómica.
+- Tres tipos de entidad y dos relaciones estables; altas, consultas, edición permitida, archivo lógico, filtros/páginas y errores uniformes.
+- Verificación completa tras Clean/hexagonal: **67 pruebas** (6 dominio, 21 aplicación, 5 TypeScript, 16 API/base, 19 navegador), más dependencias entre capas, contratos, reinicio, migraciones y fallo seguro OIDC. [Dictamen vigente, matriz y evidencia](delivery/refactor-clean-hexagonal-i1.md).
+- [Ejecución local](delivery/ejecucion-local-i1.md) documentada. No se despliega infraestructura ni se fusiona el PR.
+
+## Línea base y coordinación
+
+`feature/i1-catalog-foundation` parte de `main/25c4fccdec6304f34b3e068a93740bfbb830f20b`. La última consulta remota sigue mostrando main en esa base y esta rama; no se dispone de v0.2 publicado para comparar semántica. [SPEC-CAT-001](specs/catalogo-arquitectonico.md) y [ontología estable](architecture/ontologia.md) permanecen intactas. Sus notas originales de propuesta son históricas; esta autorización posterior define el estado de I1.
+
+Se reutilizó código compatible de catálogo/interfaz del prototipo local, sustituyendo completamente su identidad por OIDC y verificando de nuevo esta rama. No se importan ADR de identidad local ni resultados de pruebas previas. [Regla de compatibilidad con v0.2](delivery/compatibilidad-metamodelo-v02.md).
 
 ## Pendientes
 
-| ID | Asunto | Cuándo bloquea |
+| ID | Asunto | Estado / cuándo bloquea |
 | --- | --- | --- |
-| P-01 | Aprobación expresa del alcance I1, su especificación y ADR aplicables. | Cualquier implementación. |
-| P-02 | Identidad de desarrollo y aprovisionamiento/verificación de membresías; sin suplantación por cabecera. | Implementación de acceso e integración del slice. |
-| P-03 | Versiones soportadas y compatibles de Angular/Node, .NET y PostgreSQL. | Preparación del toolchain de I1. |
-| P-04 | Acordar tipos, operaciones, roles y aceptación de SPEC-CAT-001. Puede cubrirse al aprobar esa versión. | Implementación del catálogo. |
-| P-05 | Validar comprador, usuario y subsegmento financiero con evidencia. | Priorización comercial y paquete financiero piloto; no catálogo genérico. |
-| P-06 | Seleccionar jurisdicción, materia, fuentes oficiales verificables y revisores competentes. | Implementación y evaluación regulatoria. |
-| P-07 | Acordar proveedores de modelos, política de datos, framework y evaluación agéntica. | Ejecución de agentes; no I1. |
-| P-08 | Acordar licencias/derechos de contenido y confianza editorial de paquetes. | Distribución e instalación de paquetes. |
-| P-09 | Definir residencia, retención, recuperación, disponibilidad y modalidad comercial/de despliegue. | Piloto productivo con datos reales. |
-| P-10 | Demostrar necesidad, aislamiento y viabilidad comercial de Neo4j. | Solo una eventual adopción de grafo. |
+| P-01 | Aprobación de Trabajo B. | Resuelto para I1 mediante la evidencia anterior. |
+| P-02 | IdP/cliente/membresías de desarrollo. | Resuelto para I1; operación productiva permanece diferida. |
+| P-03 | Versiones soportadas y compatibilidad. | Resuelto para I1; seguir mantenimiento de parches mediante revisión. |
+| P-04 | Tipos, operaciones, roles y aceptación del catálogo. | Resuelto para I1; revisión del resultado del PR pendiente. |
+| P-05 | Validar comprador, usuario y subsegmento financiero. | Priorización comercial y paquete financiero piloto. |
+| P-06 | Jurisdicción, materia, fuentes oficiales y revisores. | Implementación y evaluación regulatoria. |
+| P-07 | Proveedores, datos, framework y evaluación agéntica. | Ejecución de agentes; no I1. |
+| P-08 | Licencias, derechos de contenido y confianza editorial. | Distribución/instalación de paquetes. |
+| P-09 | Residencia, retención, recuperación, disponibilidad y operación de identidad/secretos. | Piloto productivo con datos reales. |
+| P-10 | Necesidad, aislamiento y viabilidad comercial de Neo4j. | Solo eventual adopción de grafo. |
 
-## Próxima acción recomendada
+## Próxima acción
 
-Revisar [I1](delivery/primer-incremento.md) y [SPEC-CAT-001](specs/catalogo-arquitectonico.md). Resolver P-01–P-04 y registrar la aprobación antes de codificar. El resto queda diferido según [PLANS](../PLANS.md).
+Revisar el [dictamen favorable de la refactorización Clean/hexagonal](delivery/refactor-clean-hexagonal-i1.md) y el head publicado del PR #1; cualquier fusión corresponde a una decisión humana. Después, definir I2 y comparar v0.2 cuando exista una fuente publicada, sin alterar contratos I1 ni comenzar ese desarrollo por esta autorización. [PLANS](../PLANS.md) mantiene el alcance recomendado.
 
-## Registro de aprobación futura
+## Revisión final anterior de integración
 
-Añadir una entrada solo cuando exista respuesta explícita: fecha, evidencia de conversación, incremento, versión/commit o secciones cubiertas, ADR aceptados, exclusiones y condiciones. Si la autorización ya existe, no pedirla de nuevo. Hasta entonces no cambiar la fase.
+Código evaluado `2a27cb8`, con dependencias reinstaladas, cachés vacías, PostgreSQL y Keycloak nuevos. 41 pruebas pasan, contratos y migraciones verificados; se corrigieron permisos de auditoría en variantes de URL, validación Unicode y avisos npm, y se activó validación `date-time` en Python. La [matriz final](delivery/revision-tecnica-final-i1.md) vincula AC-01–14, OIDC-01–07, ADR y resultados sanitizados. SPEC y ontología no cambian. El PR recibe los commits mediante Git; la API REST de GitHub está bloqueada por el proxy, por lo que no se afirma una actualización de su descripción ni una aprobación remota. No se fusiona ni despliega.
 
-## Verificación de esta entrega
+## Validación vigente de Clean Architecture / hexagonal
 
-Revisión documental de estructura, enlaces locales, estados de ADR, identificadores y trazabilidad. No se ejecutan pruebas de aplicación ni se validan runtime, controles de base, agentes o comportamiento regulatorio: aún no existen. La base se prepara para revisión humana, no como arquitectura aprobada.
+Commit `1d5eeb7acb7458629ee6f8be1bfca133259767b0`: 67 pruebas correctas en exportación limpia, datos/cachés nuevos y auditorías npm/NuGet sin avisos. Núcleos .NET/TypeScript independientes, puertos tipados y adaptadores explícitos; RLS, OIDC, concurrencia y auditoría conservados. SPEC, ontología, contratos y migraciones permanecen intactos. [Matriz AC/OIDC/HEX y evidencia](delivery/refactor-clean-hexagonal-i1.md). El intento transitorio de preflight TIME_WAIT y su corrección están registrados; no se omite como si hubiese pasado. La API GitHub permanece bloqueada, sin atribuir aprobación o checks remotos. Sin fusión, producción o I2.

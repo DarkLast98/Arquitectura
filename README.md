@@ -2,36 +2,74 @@
 
 Plataforma propia de gestión agéntica de arquitectura, desde la estrategia empresarial hasta la arquitectura de solución. Producto comercializable, inicialmente orientado al sector financiero, con un Core transversal y paquetes de conocimiento por industria y jurisdicción.
 
-**Versión documental: 0.1.0 · Fase: fundación documental · Implementación: no autorizada.**
+**I1 validado técnicamente con Clean Architecture y arquitectura hexagonal, PR #1; fusión humana pendiente:** catálogo manual Angular → API .NET modular → PostgreSQL, con OIDC configurable, aislamiento por organización, revisión optimista y auditoría transaccional. La aprobación «aprobado, implementa el PR» cubre PLAN-I1-B v1.0; la fusión y los incrementos siguientes siguen pendientes.
 
-La visión procede del usuario. Los diseños, prioridades y ADR son propuestas para revisión; este repositorio todavía no contiene aplicaciones, agentes ni infraestructura. La primera entrega sugerida es un catálogo de entidades y relaciones arquitectónicas aislado por organización.
+La instrucción posterior del usuario sobre Clean Architecture/hexagonal se registra en [ADR-0015](docs/decisiones/0015-clean-architecture-hexagonal.md). La validación del código refactorizado —67 pruebas correctas en exportación limpia— se recoge en [su entrega](docs/delivery/refactor-clean-hexagonal-i1.md).
+
+El catálogo conserva tres tipos de entidad y dos relaciones de SPEC-CAT-001 v0.1.0. Keycloak 26.8.1 proporciona identidad local de desarrollo mediante Code + PKCE/PAR; AIP no recibe contraseñas. No hay agentes, Neo4j, extensiones del metamodelo ni despliegue cloud.
+
+## Ejecutar y verificar
+
+Prerrequisitos y configuración privada en [ejecución local](docs/delivery/ejecucion-local-i1.md). Con las herramientas instaladas:
+
+```bash
+npm --prefix web ci --cache /tmp/aip-npm-cache
+python3 -m pip install -r tests/requirements.txt
+python3 scripts/prepare-i1.py
+python3 scripts/trust-dev-ca.py
+python3 scripts/verify-i1.py
+```
+
+El verificador comprueba las dependencias entre capas y compila/ejecuta dominio, casos de uso .NET/TypeScript, API/PostgreSQL, navegador, contratos, persistencia tras reinicio y fallos de OIDC. Usa únicamente datos sintéticos y certificados verificados. Secretos, sesiones y bases locales quedan fuera de Git. La [revisión anterior](docs/delivery/revision-tecnica-final-i1.md) conserva su matriz histórica; el [informe de refactorización](docs/delivery/refactor-clean-hexagonal-i1.md) acredita el código actual, los límites de capas y los criterios AC/OIDC. [Evidencia inicial de la entrega](docs/delivery/evidencia-i1-trabajo-b.md).
+
+Para repetir la revisión limpia de un commit, con el checkout sin cambios pendientes: `python3 scripts/verify-clean-i1.py`. Exporta HEAD, reinstala dependencias y crea datos PostgreSQL/Keycloak nuevos.
 
 ## Lectura recomendada
 
 | Tema | Documento |
 | --- | --- |
-| Reglas permanentes para Codex | [AGENTS.md](AGENTS.md) |
-| Objetivos, restricciones y origen de requisitos | [GOALS.md](GOALS.md) |
-| Plan incremental y condiciones para comenzar | [PLANS.md](PLANS.md) |
-| Acuerdos y asuntos pendientes | [Estado](docs/00-estado.md) |
-| Visión, actores y mercado | [Visión](docs/product/vision.md), [actores](docs/product/actores.md), [problema de mercado](docs/product/problema-mercado.md) |
-| Sector financiero y requisitos | [Alcance financiero](docs/product/alcance-financiero.md), [requisitos](docs/product/requisitos.md) |
-| Arquitectura | [Funcional](docs/architecture/funcional.md), [referencia](docs/architecture/referencia.md), [ontología](docs/architecture/ontologia.md) |
-| Extensibilidad y aislamiento | [Paquetes](docs/architecture/paquetes.md), [organizaciones](docs/architecture/aislamiento-organizaciones.md) |
-| Inteligencia y regulación | [Agentes](docs/architecture/agentes.md), [modelo regulatorio](docs/architecture/regulatorio.md) |
-| Decisiones | [Índice de ADR](docs/decisiones/README.md) |
-| Próxima entrega | [Backlog](docs/delivery/backlog.md), [vertical slice](docs/delivery/primer-incremento.md), [especificación del catálogo](docs/specs/catalogo-arquitectonico.md) |
+| Reglas para Codex, objetivos y autorización | [AGENTS](AGENTS.md), [GOALS](GOALS.md), [estado](docs/00-estado.md) |
+| Plan y resultado de I1 | [PLANS](PLANS.md), [PLAN-I1-B](docs/delivery/plan-implementacion-i1-trabajo-b.md), [slice](docs/delivery/primer-incremento.md), [backlog](docs/delivery/backlog.md) |
+| Contrato estable y ejecutable | [SPEC-CAT-001](docs/specs/catalogo-arquitectonico.md), [OpenAPI](contracts/openapi/catalog.v1.json), [JSON Schema](contracts/schemas/catalog/0.1.0/catalog.schema.json) |
+| Producto y mercado | [Visión](docs/product/vision.md), [actores](docs/product/actores.md), [problema](docs/product/problema-mercado.md), [alcance financiero](docs/product/alcance-financiero.md), [requisitos](docs/product/requisitos.md) |
+| Arquitectura | [Funcional](docs/architecture/funcional.md), [referencia](docs/architecture/referencia.md), [ontología](docs/architecture/ontologia.md), [paquetes](docs/architecture/paquetes.md), [aislamiento](docs/architecture/aislamiento-organizaciones.md) |
+| Decisiones y coordinación | [ADR](docs/decisiones/README.md), [compatibilidad con v0.2](docs/delivery/compatibilidad-metamodelo-v02.md) |
+| Diseño futuro | [Agentes](docs/architecture/agentes.md), [regulación](docs/architecture/regulatorio.md) |
 
-## Dirección tecnológica inicial
+## Estructura implementada
 
-Angular y TypeScript; backend .NET modular; agentes Python; PostgreSQL transaccional; OpenAPI y JSON Schema para contratos; Markdown, Mermaid y ADR para arquitectura. Neo4j se evaluará como posible proyección de conocimiento. Todas las decisiones técnicas están registradas como propuestas, sin versiones de herramientas ni proveedor de despliegue aprobados.
+```text
+Aip.slnx                         # Solución única para desarrollo y compilación
+src/Aip.Domain/                  # Agregados e invariantes; solo BCL
+src/Aip.Application/             # Casos de uso, comandos/consultas y puertos
+  Catalog/                       # Catálogo tipado y coordinación de cambios
+  IdentityAccess/                # Identidad y autorización organizacional
+  Audit/                         # Contratos de auditoría
+src/Aip.Infrastructure/Postgres/ # Adaptadores y migraciones 001–006 intactas
+src/Aip.Api/
+  Program.cs                     # Raíz de composición del monolito
+  Adapters/Http/                 # JSON, rutas, Problem Details y ETag
+  Adapters/Oidc/                 # Protocolo OIDC, cookies y antiforgery
+web/src/app/
+  domain/                        # Modelos TypeScript
+  application/                   # Casos de uso y puerto CatalogGateway
+  adapters/                      # HTTP, CSRF y navegación de autenticación
+  catalog-app.*                  # Presentación Angular
+  composition.ts                 # Inyección del adaptador
+contracts/{openapi,schemas}/      # API v1 y esquema 0.1.0 sin cambios
+tests/                          # Dominio, aplicación, API/base y OIDC
+web/tests/                       # Casos de uso/adaptador TypeScript sin navegador
+web/e2e/                         # Playwright contra servicios reales
+scripts/                         # Preparación y verificadores locales/limpios
+docs/                            # Producto, arquitectura, ADR y entrega
+```
 
-## Límites de esta entrega
+El grafo es `Api → Application → Domain` e `Infrastructure → Application`; Api conoce Infrastructure solo en la composición. [Puertos, responsabilidades y transacción](docs/architecture/clean-hexagonal.md).
 
-Solo documentación. No se han creado esqueletos de aplicaciones, dependencias, contenedores, despliegues ni agentes. No se atribuyen obligaciones a normas no verificadas. El diseño exige aislamiento entre organizaciones y aprobación humana de conclusiones regulatorias.
+Para el ciclo de desarrollo sin PostgreSQL/IdP: `python3 scripts/verify-core-i1.py` tras instalar dependencias web. La aceptación completa mantiene servicios reales; el núcleo TypeScript compila sin DOM/Angular y el núcleo .NET sin ASP.NET/Npgsql.
 
-Para iniciar el desarrollo se necesita tu aprobación del incremento y sus ADR aplicables, y resolver los bloqueos de [PLANS.md](PLANS.md). El alcance de esa aprobación quedará registrado en el estado.
+## Dirección y límites
 
-## Versionado
+Angular 22.2.3 / TypeScript 6.0.3, Node 24.19.0, .NET 10.0.13 (SDK 10.0.402), PostgreSQL 17.11, OpenAPI 3.1 y JSON Schema 2020-12. Los ADR aplicables están aceptados **para I1** con evidencia de autorización. Python de este incremento solo ejecuta herramientas/pruebas; la arquitectura agéntica, paquetes y regulación siguen como diseño futuro.
 
-Los documentos Markdown se mantienen en Git. `0.1.0` identifica esta fundación, no una versión ejecutable del producto ni una aprobación. [CHANGELOG.md](CHANGELOG.md) resume cambios documentales. Las decisiones conservan identificadores y su historia; las versiones de API, esquemas, paquetes y registros tienen semánticas distintas definidas en la especificación.
+La ejecución local no habilita producción. Gestión de claves/secretos, operación del IdP, recuperación y gobierno de organizaciones requieren trabajo adicional acordado. La especificación y ontología estables se conservan byte por byte; sus notas históricas de propuesta se interpretan junto al registro posterior de aprobación. [CHANGELOG](CHANGELOG.md) conserva la evolución en Git.

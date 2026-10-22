@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Aip.Domain/Aip.Domain.csproj" />
+    <Project Path="src/Aip.Application/Aip.Application.csproj" />
+    <Project Path="src/Aip.Infrastructure/Aip.Infrastructure.csproj" />
+    <Project Path="src/Aip.Api/Aip.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Aip.Catalog.Domain.Tests/Aip.Catalog.Domain.Tests.csproj" />
+    <Project Path="tests/Aip.Application.Tests/Aip.Application.Tests.csproj" />
+  </Folder>
+</Solution>

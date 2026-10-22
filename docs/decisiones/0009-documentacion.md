@@ -1,6 +1,6 @@
 # ADR-0009: arquitectura documental en Git
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** RQ-007, RQ-008.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** RQ-007, RQ-008.
 
 ## Contexto y decisión propuesta
 
@@ -15,4 +15,4 @@ Mantener Markdown como fuente documental, Mermaid para diagramas de texto y ADR 
 
 Exige enlaces válidos, vocabulario consistente, revisión de estados y actualización de índices. No se asume un renderer Mermaid instalado ni que un commit certifique el contenido. La fuente está creada para revisión conforme a la tarea documental; el ADR permanece propuesto hasta acuerdo explícito.
 
-**Aprobación:** pendiente como convención permanente; la escritura de documentos sí está autorizada por el usuario.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.

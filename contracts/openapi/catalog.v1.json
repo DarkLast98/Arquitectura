@@ -1,0 +1,2265 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AIP Catalog API",
+    "version": "0.1.0",
+    "description": "I1 local. Cookies protegidas, CSRF y contexto organizacional autorizado. No habilita agentes ni regulaci\u00f3n."
+  },
+  "paths": {
+    "/api/v1/organizations/{organizationId}/catalog/types": {
+      "get": {
+        "operationId": "get_catalog_types",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Types"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/v1/organizations/{organizationId}/catalog/entities": {
+      "get": {
+        "operationId": "get_catalog_entities",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000,
+              "default": 0
+            }
+          },
+          {
+            "name": "type_id",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "core.business_capability",
+                "core.application",
+                "core.data_asset"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "active",
+                "archived",
+                "all"
+              ],
+              "default": "active"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[^\\u0000\\uD800-\\uDFFF]*$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/EntityPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "post_catalog_entities",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Entity"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/CreateEntity"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/catalog/entities/{id}": {
+      "get": {
+        "operationId": "get_catalog_entities_id",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Entity"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "patch_catalog_entities_id",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Entity"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/PatchEntity"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/catalog/entities/{id}/archive": {
+      "post": {
+        "operationId": "post_catalog_entities_id_archive",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Entity"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/v1/organizations/{organizationId}/catalog/relationships": {
+      "get": {
+        "operationId": "get_catalog_relationships",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000,
+              "default": 0
+            }
+          },
+          {
+            "name": "type_id",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "core.supports",
+                "core.uses"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "active",
+                "archived",
+                "all"
+              ],
+              "default": "active"
+            }
+          },
+          {
+            "name": "source_entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "target_entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/RelationshipPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "post_catalog_relationships",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Relationship"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/CreateRelationship"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/catalog/relationships/{id}": {
+      "get": {
+        "operationId": "get_catalog_relationships_id",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Relationship"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/v1/organizations/{organizationId}/catalog/relationships/{id}/archive": {
+      "post": {
+        "operationId": "post_catalog_relationships_id_archive",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Relationship"
+                }
+              }
+            },
+            "headers": {
+              "ETag": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/v1/organizations/{organizationId}/catalog/audit-events": {
+      "get": {
+        "operationId": "get_catalog_audit-events",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000,
+              "default": 0
+            }
+          },
+          {
+            "name": "resource_kind",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "entity",
+                "relationship"
+              ]
+            }
+          },
+          {
+            "name": "resource_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/AuditEventPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/session": {
+      "get": {
+        "operationId": "get__api_session",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Operaci\u00f3n confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "post__auth_logout",
+        "parameters": [
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Redirecci\u00f3n de cierre de sesi\u00f3n OIDC"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "operationId": "oidc_login",
+        "security": [],
+        "parameters": [
+          {
+            "name": "returnUrl",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Authorization Code con PKCE; PAR cuando lo anuncia el proveedor"
+          },
+          "400": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error de contrato, autorizaci\u00f3n o dominio",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "../schemas/catalog/0.1.0/catalog.schema.json#/$defs/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-aip.session"
+      }
+    }
+  }
+}

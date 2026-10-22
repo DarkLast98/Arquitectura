@@ -1,6 +1,6 @@
 # Arquitectura de referencia
 
-**Estado:** propuesta. Dirección tecnológica del usuario, detallada en ADR-0002–ADR-0011. Ningún componente está instalado o implementado por estos documentos.
+**Estado:** referencia general con capacidades futuras propuestas. I1 implementado; límites de código Clean Architecture/hexagonal autorizados en [ADR-0015](../decisiones/0015-clean-architecture-hexagonal.md) y detallados en [arquitectura de código](clean-hexagonal.md).
 
 ## Contexto y componentes lógicos
 
@@ -51,4 +51,4 @@ I1 puede resolver relaciones con PostgreSQL. Si se incorpora un grafo después, 
 
 Aislamiento y trazabilidad son condiciones desde I1. Disponibilidad, volumen, latencia, costos, retención, recuperación y residencia requieren datos del piloto. Usar mediciones y amenazas reales antes de elegir escalamiento o despliegue. No se ofrece una garantía productiva desde un prototipo local.
 
-La organización de carpetas de aplicación se decidirá al aprobar I1; esta entrega no crea esqueletos ni instalaciones.
+La organización implementada de I1 se concreta en Aip.Domain, Aip.Application, Aip.Infrastructure y Aip.Api, con modelos/casos de uso y adaptador HTTP separados en Angular. Las capacidades futuras del diagrama no forman parte de esta implementación.

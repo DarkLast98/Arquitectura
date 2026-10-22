@@ -1,6 +1,6 @@
 # ADR-0004: .NET para backend y dominio
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** RQ-007; relacionado con ADR-0002.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** RQ-007; relacionado con ADR-0002.
 
 ## Contexto y decisión propuesta
 
@@ -15,4 +15,4 @@ Usar .NET para API, casos de uso, autorización, reglas de integridad y transacc
 
 Permite límites y contratos explícitos, a cambio de mantener interoperabilidad con Python futuro. Elegir versión con soporte oficial vigente y validar librerías PostgreSQL, contratos y autenticación antes de fijarlas. Framework de persistencia y organización física de proyectos siguen pendientes; no es necesario imponer una biblioteca concreta en la fundación.
 
-**Aprobación:** pendiente; sin código ni toolchain instalados para AIP.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.

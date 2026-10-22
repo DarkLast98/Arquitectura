@@ -1,6 +1,6 @@
 # ADR-0010: aislamiento lógico con defensa en PostgreSQL
 
-**Estado:** Propuesto. **Fecha:** 2026-10-19. **Origen:** RQ-006.
+**Estado:** Aceptado para I1 / Trabajo B. **Fecha:** 2026-10-19. **Origen:** RQ-006.
 
 ## Contexto y decisión propuesta
 
@@ -16,4 +16,4 @@ El aislamiento es obligatorio; su mecanismo no está aprobado. Proponer para I1 
 
 La opción compartida facilita I1, pero no garantiza por sí sola cumplimiento, aislamiento de backups o requisitos de un cliente. Validar lecturas/escrituras con el rol real, pooling, contexto ausente, relaciones cruzadas, conteos y auditoría. Revisar necesidad de base dedicada antes de datos productivos o requisitos de residencia específicos. Las garantías cubren también futuros agentes, índices y archivos.
 
-**Aprobación:** pendiente; no se han aplicado políticas ni ejecutado sus pruebas.
+**Aprobación:** usuario «aprobado, implementa el PR», referido al PR #1 / PLAN-I1-B v1.0 en `469f2dc`. Aceptación limitada a I1; capacidades futuras y despliegue siguen diferidos.
