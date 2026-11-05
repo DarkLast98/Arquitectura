@@ -2,7 +2,7 @@
 
 ## Actualización: Docker local de I1 — 2026-11-05
 
-El usuario autorizó explícitamente migrar la estructura para ejecutarla en Docker. Se implementó la propuesta de desarrollo local en la rama `feature/docker-local-i1`, con [guía de ejecución](delivery/ejecucion-docker-i1.md) y [ADR-0016](decisiones/0016-desarrollo-docker-compose.md). **No autoriza producción, I2, agentes, fusión automática ni publicación de imágenes**. No existe aún evidencia de ejecución real de Compose en un host con Docker; pruebas de integración pendientes. El estado histórico de PR #1 descrito abajo corresponde a 2026-10-21.
+El usuario autorizó explícitamente migrar la estructura para ejecutarla en Docker. Se implementó la propuesta de desarrollo local en la rama `feature/docker-local-i1`, con [guía de ejecución](delivery/ejecucion-docker-i1.md) y [ADR-0016](decisiones/0016-desarrollo-docker-compose.md). **No autoriza producción, I2, agentes, fusión automática ni publicación de imágenes**. [GitHub Actions #42072985825](https://github.com/DarkLast98/Arquitectura/actions/runs/42072985825) validó en Linux el build, arranque Compose, preparación/migraciones PostgreSQL y smoke HTTPS/API/contratos/OIDC del commit `ea9ef066de0c189e03a9123cede6a3107d515946`. Quedan pendientes las pruebas manuales en Windows y la aceptación funcional/OIDC/RLS completa; no se fusionó el PR. El estado histórico de PR #1 descrito abajo corresponde a 2026-10-21.
 
 **Fecha:** 2026-10-21 America/Bogota. **Fase:** I1 refactorizado a Clean Architecture/hexagonal y validado técnicamente; revisión/fusión humanas pendientes del PR #1. **Fusión:** no autorizada automáticamente. **Producción e I2:** fuera de alcance.
 

@@ -18,7 +18,7 @@ docker compose ps
 docker compose run --rm --no-deps setup python3 scripts/docker_smoke.py
 ```
 
-El acceso es `https://localhost:7240` y el proveedor de identidad `https://auth.localhost:8443`. Se requiere confiar explícitamente en la CA local y comprobar que `auth.localhost` resuelva a loopback. Los servicios de preparación y migración terminan tras ejecutarse; se preservan volúmenes de datos. La ejecución real del flujo Docker permanece pendiente de prueba en un host con Docker. La alternativa Linux nativa continúa disponible.
+El acceso es `https://localhost:7240` y el proveedor de identidad `https://auth.localhost:8443`. Se requiere confiar explícitamente en la CA local y comprobar que `auth.localhost` resuelva a loopback. Los servicios de preparación y migración terminan tras ejecutarse; se preservan volúmenes de datos. La compilación, arranque y comprobación básica de HTTPS/OIDC/contratos pasaron en [GitHub Actions](https://github.com/DarkLast98/Arquitectura/actions/runs/42072985825). La validación manual de login y aislamiento sigue pendiente. La alternativa Linux nativa continúa disponible.
 
 ## Ejecutar y verificar
 

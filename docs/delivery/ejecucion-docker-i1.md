@@ -95,4 +95,4 @@ scripts/docker_db_init.py
 scripts/docker_smoke.py
 ```
 
-**Verificación pendiente:** ejecutar realmente `docker compose up --build`, el smoke y pruebas de autenticación/aislamiento en un host con Docker; la creación del cambio en GitHub no representa una ejecución de contenedores.
+**Evidencia CI 2026-11-05:** [GitHub Actions #42072985825](https://github.com/DarkLast98/Arquitectura/actions/runs/42072985825) ejecutó correctamente `docker compose config --quiet`, `docker compose up --build -d` y `docker compose run --rm --no-deps setup python3 scripts/docker_smoke.py` para `ea9ef066de0c189e03a9123cede6a3107d515946`. Se verificó construcción, inicio de servicios, migración con fixtures, TLS, API, contrato, sesión anónima y issuer OIDC. **No sustituye** las pruebas de login y autorización/aislamiento de dos organizaciones, persistencia funcional o una ejecución manual en Windows; pendientes antes de aprobar su uso generalizado.
