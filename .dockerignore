@@ -1,0 +1,15 @@
+.git/
+.local/
+**/bin/
+**/obj/
+**/node_modules/
+web/dist/
+web/.angular/
+playwright-report/
+test-results/
+**/__pycache__/
+*.user
+.env
+.env.*
+*.pem
+*.key
