@@ -57,16 +57,17 @@ services:
       setup:
         condition: service_completed_successfully
     entrypoint: ["/bin/bash", "-ec"]
-    command: |
-      mkdir -p /opt/keycloak/data/import
-      cp /state/realms/aip-realm.json /opt/keycloak/data/import/aip-realm.json
-      export KC_BOOTSTRAP_ADMIN_PASSWORD="$$(cat /state/kc-admin-password)"
-      exec /opt/keycloak/bin/kc.sh start-dev --import-realm \
-        --https-port=8443 \
-        --https-certificate-file=/state/tls/server.crt \
-        --https-certificate-key-file=/state/tls/server.key \
-        --hostname=https://auth.localhost:8443 \
-        --http-enabled=false
+    command:
+      - |
+          mkdir -p /opt/keycloak/data/import
+          cp /state/realms/aip-realm.json /opt/keycloak/data/import/aip-realm.json
+          export KC_BOOTSTRAP_ADMIN_PASSWORD="$$(cat /state/kc-admin-password)"
+          exec /opt/keycloak/bin/kc.sh start-dev --import-realm \
+            --https-port=8443 \
+            --https-certificate-file=/state/tls/server.crt \
+            --https-certificate-key-file=/state/tls/server.key \
+            --hostname=https://auth.localhost:8443 \
+            --http-enabled=false
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: bootstrap-admin
       KC_HEALTH_ENABLED: "true"
