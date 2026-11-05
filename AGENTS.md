@@ -6,6 +6,8 @@ Actuar como arquitecto principal y líder técnico de **Architecture Intelligenc
 
 **Fase vigente: I1 / Trabajo B implementado para revisión**, autorizado mediante «aprobado, implementa el PR» (PR #1, PLAN-I1-B v1.0, `469f2dc`). Se permiten mantenimiento y verificación dentro de ese alcance. No implementar I2, agentes, Neo4j, cambios incompatibles de tipos, despliegues ni fusiones automáticas sin autorización específica. Una especificación o un ADR propuesto no autoriza capacidades adicionales.
 
+**Actualización de autorización 2026-11-05:** el usuario autorizó la adaptación de I1 a Docker para desarrollo local; ver [ADR-0016](docs/decisiones/0016-desarrollo-docker-compose.md). Mantener el alcance sin producción, I2, agentes, cambios de contratos ni fusión automática. La existencia del Compose no acredita pruebas ejecutadas.
+
 ## Principios del producto
 
 1. AIP es un producto comercial independiente de empresas particulares. No introducir nombres, procesos internos o datos de un cliente como reglas universales.
