@@ -1,0 +1,20 @@
+# I1: Angular is built once and served by the .NET BFF (same-origin cookies/CSRF).
+FROM node:24.19.0-bookworm-slim AS web-build
+WORKDIR /source/web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY web/ ./
+RUN npm run build
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS api-build
+WORKDIR /source
+COPY . ./
+RUN dotnet restore src/Aip.Api/Aip.Api.csproj --locked-mode
+RUN dotnet publish src/Aip.Api/Aip.Api.csproj -c Release -o /out --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+COPY --from=api-build /out/ ./
+COPY --from=web-build /source/web/dist/aip/browser/ /app/web/
+EXPOSE 7240
+ENTRYPOINT ["dotnet", "Aip.Api.dll"]

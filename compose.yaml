@@ -1,0 +1,119 @@
+name: aip-i1
+
+services:
+  setup:
+    image: aip-i1-tools:local
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.tools
+    command: ["python3", "scripts/docker_setup.py"]
+    volumes:
+      - aip-state:/state
+      - ./:/workspace:ro
+    networks: [aip]
+    restart: "no"
+
+  postgres:
+    image: postgres:17.11-bookworm
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    environment:
+      POSTGRES_USER: aip_owner
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD_FILE: /state/postgres-owner-password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - aip-state:/state:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U aip_owner -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [aip]
+    restart: unless-stopped
+
+  migrate:
+    image: aip-i1-tools:local
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.tools
+    command: ["python3", "scripts/docker_db_init.py"]
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    volumes:
+      - aip-state:/state:ro
+      - ./:/workspace:ro
+    networks: [aip]
+    restart: "no"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.8.1
+    user: "1000:0"
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    entrypoint: ["/bin/bash", "-ec"]
+    command:
+      - |
+          mkdir -p /opt/keycloak/data/import
+          cp /state/realms/aip-realm.json /opt/keycloak/data/import/aip-realm.json
+          export KC_BOOTSTRAP_ADMIN_PASSWORD="$$(cat /state/kc-admin-password)"
+          exec /opt/keycloak/bin/kc.sh start-dev --import-realm \
+            --https-port=8443 \
+            --https-certificate-file=/state/tls/server.crt \
+            --https-certificate-key-file=/state/tls/server.key \
+            --hostname=https://auth.localhost:8443 \
+            --http-enabled=false
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: bootstrap-admin
+      KC_HEALTH_ENABLED: "true"
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+      - aip-state:/state:ro
+    ports:
+      - "127.0.0.1:8443:8443"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/8443'"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    networks:
+      aip:
+        aliases: [auth.localhost]
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      keycloak:
+        condition: service_healthy
+    user: "10001:0"
+    environment:
+      ASPNETCORE_URLS: https://+:7240
+      AIP_CONFIG: /state/appsettings.json
+      SSL_CERT_FILE: /state/tls/bundle.pem
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+    volumes:
+      - aip-state:/state
+    ports:
+      - "127.0.0.1:7240:7240"
+    networks: [aip]
+    restart: unless-stopped
+
+volumes:
+  aip-state:
+  postgres-data:
+  keycloak-data:
+
+networks:
+  aip:
+    driver: bridge

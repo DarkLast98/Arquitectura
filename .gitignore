@@ -8,3 +8,8 @@ playwright-report/
 test-results/
 *.user
 __pycache__/
+
+# Evitar credenciales de desarrollo
+.env
+.env.*
+!.env.example

@@ -8,6 +8,18 @@ La instrucción posterior del usuario sobre Clean Architecture/hexagonal se regi
 
 El catálogo conserva tres tipos de entidad y dos relaciones de SPEC-CAT-001 v0.1.0. Keycloak 26.8.1 proporciona identidad local de desarrollo mediante Code + PKCE/PAR; AIP no recibe contraseñas. No hay agentes, Neo4j, extensiones del metamodelo ni despliegue cloud.
 
+## Desarrollo local con Docker Compose
+
+**Nueva opción para I1 (desarrollo, no producción):** [instrucciones Docker](docs/delivery/ejecucion-docker-i1.md). Con Docker Desktop/Engine y Compose:
+
+```bash
+docker compose up --build -d
+docker compose ps
+docker compose run --rm --no-deps setup python3 scripts/docker_smoke.py
+```
+
+El acceso es `https://localhost:7240` y el proveedor de identidad `https://auth.localhost:8443`. Se requiere confiar explícitamente en la CA local y comprobar que `auth.localhost` resuelva a loopback. Los servicios de preparación y migración terminan tras ejecutarse; se preservan volúmenes de datos. La compilación, arranque y comprobación básica de HTTPS/OIDC/contratos pasaron en [GitHub Actions](https://github.com/DarkLast98/Arquitectura/actions/runs/42072985825). La validación manual de login y aislamiento sigue pendiente. La alternativa Linux nativa continúa disponible.
+
 ## Ejecutar y verificar
 
 Prerrequisitos y configuración privada en [ejecución local](docs/delivery/ejecucion-local-i1.md). Con las herramientas instaladas:
